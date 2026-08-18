@@ -1,0 +1,51 @@
+# Cloud Run service definition for the Ember backend.
+# Deploy with:
+#   gcloud run services replace cloudrun.yaml --project=<PROJECT_ID>
+# or simpler:
+#   gcloud run deploy ember-api --source . --region us-central1 --allow-unauthenticated
+#
+# NOTE: costs stay near zero because Cloud Run scales to zero when idle.
+
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: ember-api
+  labels:
+    app: ember
+spec:
+  template:
+    metadata:
+      annotations:
+        # Scale to zero when idle → keeps the $150 credits alive
+        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/maxScale: "1"
+    spec:
+      timeoutSeconds: 300
+      containerConcurrency: 10
+      containers:
+        - name: ember-api
+          image: gcr.io/cloudrun/placeholder
+          env:
+            - name: GOOGLE_CLOUD_PROJECT
+              value: "project-0f44c1b0-4112-4522-88a"
+            - name: GOOGLE_CLOUD_REGION
+              value: "us-central1"
+            - name: GEMINI_MODEL
+              value: "gemini-3.5-flash-lite"
+            - name: GEMMA_MODEL
+              value: "gemma-4-26b-a4b-it-maas"
+            - name: HOST
+              value: "0.0.0.0"
+            - name: PORT
+              value: "8080"
+          ports:
+            - containerPort: 8080
+          # Liveness/readiness: FastAPI serves /docs; use root as health probe
+          startupProbe:
+            httpGet:
+              path: /
+              port: 8080
+          resources:
+            limits:
+              cpu: "1"
+              memory: "512Mi"

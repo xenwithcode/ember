@@ -1,0 +1,87 @@
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#FDFBF7',
+    'primaryTextColor': '#2C2523',
+    'primaryBorderColor': '#E28766',
+    'lineColor': '#E28766',
+    'fontSize': '14px'
+  }
+}}%%
+
+graph TB
+    User["👤 User<br/>(Young Adult 18-23)"]
+
+    subgraph Frontend["🎨 FRONTEND — Next.js + React"]
+        Pages["Journal | Activities | Calendar | Dashboard | Friends"]
+        PrivacyShieldUI["🛡️ PrivacyShield UI Component"]
+    end
+
+    subgraph Backend["⚙️ BACKEND — Cloud Run (FastAPI)"]
+        subgraph PrivacyLayer["🔒 PRIVACY LAYER (NEW)"]
+            Gemma["🧠 Gemma 2 2B<br/>Vertex AI Model Garden"]
+            PII["PII Anonymization"]
+            Safety["Crisis Detection"]
+            Mood["Mood Analysis"]
+        end
+
+        subgraph AgentLayer["🤖 AGENT LAYER"]
+            ADK["Google ADK<br/>Agent Framework"]
+            Gemini["Gemini 3.5 Flash Lite<br/>Vertex AI"]
+            Tools["5 Agent Tools"]
+        end
+
+        subgraph Services["🔧 Services"]
+            Activities["Activity Catalog"]
+            Geo["Geolocation"]
+            Calendar["Calendar"]
+            Registration["Registration"]
+        end
+    end
+
+    subgraph GoogleCloud["☁️ GOOGLE CLOUD"]
+        VertexAI["Vertex AI"]
+        Firestore["Firestore"]
+        CloudRun["Cloud Run"]
+        MapsAPI["Maps API"]
+    end
+
+    subgraph RealWorld["🌍 REAL WORLD"]
+        ActivitiesRW["Face-to-Face Activities"]
+    end
+
+    %% User flow
+    User -->|"Intimate text"| Frontend
+    Frontend -->|"POST /api/chat"| PrivacyLayer
+
+    %% Privacy layer internal
+    Gemma --> PII
+    Gemma --> Safety
+    Gemma --> Mood
+    PII -->|"Anonymized text"| AgentLayer
+    Safety -->|"Crisis?"| User
+    Mood -->|"Mood data"| PrivacyShieldUI
+
+    %% Agent flow
+    ADK --> Gemini
+    ADK --> Tools
+    Tools --> Services
+    Services --> Firestore
+    Services --> MapsAPI
+
+    %% Response back
+    AgentLayer -->|"Empathetic response"| Frontend
+    Frontend -->|"Display with shield"| User
+
+    %% Real world
+    Tools -->|"Suggests"| RealWorld
+    User -->|"Attends"| RealWorld
+
+    %% Styles
+    classDef privacyStyle fill:#10B981,stroke:#047857,color:#fff
+    classDef agentStyle fill:#E28766,stroke:#C66A4D,color:#fff
+    classDef cloudStyle fill:#4285F4,stroke:#1E40AF,color:#fff
+
+    class Gemma,PII,Safety,Mood privacyStyle
+    class ADK,Gemini,Tools agentStyle
+    class VertexAI,Firestore,CloudRun,MapsAPI cloudStyle
