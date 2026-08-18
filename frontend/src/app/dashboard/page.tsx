@@ -239,7 +239,8 @@ export default function DashboardPage() {
         <div className="text-center bg-terracotta-500/10 rounded-3xl p-10 border border-terracotta-500/20">
           <Sparkles className="w-8 h-8 text-terracotta-500 mx-auto mb-4" />
           <p className="font-hand text-2xl text-coffee-800 mb-2">
-            &ldquo;You didn&apos;t come this far to only come this far.&rdquo;
+            &ldquo;You don&apos;t write to be understood by others. You write
+            to finally understand yourself.&rdquo;
           </p>
           <p className="text-sm text-warm-gray">
             Keep building your bridge to the real world, one step at a time.

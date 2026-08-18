@@ -65,6 +65,12 @@ export default function OnboardingWelcome({
               The real one.
             </p>
 
+            <p className="font-hand text-2xl text-terracotta-600">
+              You don&apos;t write to be understood by others.
+              <br />
+              You write to finally understand yourself.
+            </p>
+
             <p>
               This 7-day journey will teach you how. One gentle step at a
               time. No pressure. No judgment. No streaks to maintain.
