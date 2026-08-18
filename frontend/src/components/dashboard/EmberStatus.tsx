@@ -4,6 +4,7 @@
 
 import { useId } from "react";
 import { Flame } from "lucide-react";
+import EmberFlame from "@/components/EmberFlame";
 
 interface EmberStatusProps {
   level: number;
@@ -19,14 +20,6 @@ interface EmberStatusProps {
     sparkChallengesCompleted: number;
   };
 }
-
-// Flame silhouettes (viewBox 0 0 64 96)
-const OUTER_FLAME =
-  "M32 2 C 42 18, 58 28, 58 56 C 58 78, 46 94, 32 94 C 18 94, 6 78, 6 56 C 6 28, 22 18, 32 2 Z";
-const OUTER_FLAME_BIG =
-  "M32 0 C 45 15, 62 28, 62 58 C 62 80, 48 96, 32 96 C 16 96, 2 80, 2 58 C 2 28, 19 15, 32 0 Z";
-const INNER_FLAME =
-  "M32 24 C 37 32, 44 38, 44 54 C 44 68, 39 78, 32 78 C 25 78, 20 68, 20 54 C 20 38, 27 32, 32 24 Z";
 
 interface FlameTier {
   outer: [string, string, string];
@@ -75,8 +68,6 @@ export default function EmberStatus({
 
   // Growth by level: small warm ember → tall golden flame
   const flameH = 62 + clampLevel * 10; // 72 → 122 px
-  const flameW = Math.round(flameH * 0.66);
-  const glow = 10 + clampLevel * 4;
 
   // Progress ring at the flame's base
   const ringR = Math.round(flameH * 0.3);
@@ -105,32 +96,6 @@ export default function EmberStatus({
 
         {/* The ember — a living flame, always contained within its area */}
         <div className="group relative flex items-center justify-center h-36 sm:h-44 mb-6">
-          {/* Ambient glow: brighter when the week was good */}
-          <div
-            className="absolute rounded-full blur-2xl animate-pulse-soft transition-opacity duration-1000"
-            style={{
-              width: flameW * 2,
-              height: flameW * 1.5,
-              background: `radial-gradient(circle, ${tier.highlight} 0%, transparent 70%)`,
-              opacity: 0.45 + moodV * 0.55,
-            }}
-          />
-
-          {/* Outer flame layer: slower flicker → depth and volume */}
-          <svg
-            width={Math.round(flameW * 1.14)}
-            height={Math.round(flameH * 1.14)}
-            viewBox="0 0 64 96"
-            aria-hidden
-            className="absolute animate-flicker-slow"
-            style={{
-              filter: `drop-shadow(0 0 ${glow}px rgba(196, 92, 44, 0.4))`,
-              opacity: 0.7,
-            }}
-          >
-            <path d={OUTER_FLAME_BIG} fill="#A63A1E" opacity="0.45" />
-          </svg>
-
           {/* Progress ring seated at the flame's base (visual % to next level) */}
           <div
             className="absolute"
@@ -179,66 +144,19 @@ export default function EmberStatus({
             </svg>
           </div>
 
-          {/* Rising sparks: higher levels, or good mood weeks */}
-          {showSparks && (
-            <>
-              <div
-                className="absolute left-1/2 -translate-x-1/2 w-1.5 h-4 bg-amber-300 rounded-full animate-flame-rise opacity-70"
-                style={{ bottom: `calc(50% + ${flameH / 2 + 4}px)` }}
-              />
-              <div
-                className="absolute left-1/2 -translate-x-3 w-1 h-5 bg-orange-300 rounded-full animate-flame-rise opacity-60"
-                style={{
-                  bottom: `calc(50% + ${flameH / 2 + 8}px)`,
-                  animationDelay: "0.3s",
-                }}
-              />
-              <div
-                className="absolute left-1/2 translate-x-2.5 w-1.5 h-3 bg-yellow-200 rounded-full animate-flame-rise opacity-70"
-                style={{
-                  bottom: `calc(50% + ${flameH / 2 + 2}px)`,
-                  animationDelay: "0.6s",
-                }}
-              />
-            </>
-          )}
-
           {/* Main flame: flickers at rest, wobbles when you hover it */}
-          <svg
-            width={flameW}
+          <EmberFlame
             height={flameH}
-            viewBox="0 0 64 96"
-            className="relative animate-flicker group-hover:animate-flame-hover transition-transform duration-500"
-            style={{
-              filter: `saturate(${(0.65 + moodV * 0.75).toFixed(2)}) brightness(${(0.8 + moodV * 0.35).toFixed(2)}) drop-shadow(0 0 ${glow}px ${tier.highlight})`,
-            }}
-          >
-            <defs>
-              <linearGradient id={gradientId} x1="0" y1="1" x2="0" y2="0">
-                <stop offset="0%" stopColor={tier.outer[0]} />
-                <stop offset="50%" stopColor={tier.outer[1]} />
-                <stop offset="100%" stopColor={tier.outer[2]} />
-              </linearGradient>
-              <linearGradient id={`${gradientId}-inner`} x1="0" y1="1" x2="0" y2="0">
-                <stop offset="0%" stopColor={tier.inner[0]} />
-                <stop offset="100%" stopColor={tier.inner[1]} />
-              </linearGradient>
-            </defs>
-            <path d={OUTER_FLAME} fill={`url(#${gradientId})`} />
-            <path d={INNER_FLAME} fill={`url(#${gradientId}-inner)`} />
-            {/* Level number in the bright core of the flame */}
-            <text
-              x="32"
-              y="80"
-              textAnchor="middle"
-              fontSize="22"
-              fontWeight="700"
-              fill="#7C2D12"
-              style={{ fontFamily: "var(--font-serif, serif)" }}
-            >
-              {clampLevel}
-            </text>
-          </svg>
+            outer={tier.outer}
+            inner={tier.inner}
+            glowColor={tier.highlight}
+            mood={moodV}
+            levelNumber={clampLevel}
+            backLayer
+            sparks={showSparks}
+            flicker
+            wobble
+          />
         </div>
 
         {/* Title */}

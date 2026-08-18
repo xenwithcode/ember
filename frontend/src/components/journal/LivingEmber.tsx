@@ -3,11 +3,25 @@
 "use client";
 
 import { useMemo } from "react";
+import EmberFlame from "@/components/EmberFlame";
 import { EmberState, emotionColors } from "@/hooks/useEmberAnalysis";
 
 interface LivingEmberProps {
   emberState: EmberState;
   isActive: boolean;
+}
+
+function hexToRgb(hex: string): [number, number, number] {
+  const clean = hex.replace("#", "");
+  const value = parseInt(clean, 16);
+  return [(value >> 16) & 255, (value >> 8) & 255, value & 255];
+}
+
+function mix(hex: string, target: string, amount: number): string {
+  const from = hexToRgb(hex);
+  const to = hexToRgb(target);
+  const blended = from.map((c, i) => Math.round(c + (to[i] - c) * amount));
+  return `rgb(${blended[0]}, ${blended[1]}, ${blended[2]})`;
 }
 
 export default function LivingEmber({ emberState, isActive }: LivingEmberProps) {
@@ -16,15 +30,27 @@ export default function LivingEmber({ emberState, isActive }: LivingEmberProps) 
   // Scale: 0.4 (dim) to 1.0 (full brightness)
   const scale = 0.4 + (intensity / 100) * 0.6;
 
+  // Flame grows with intensity: 56 px dim → 128 px vibrant
+  const flameH = Math.round(56 + intensity * 0.72);
+
   // Color based on dominant emotion
   const color = emotionColors[dominantEmotion];
 
-  // Glow intensity (shadow spread)
-  const glowSize = 20 + intensity * 0.8;
-  const glowOpacity = 0.3 + (intensity / 100) * 0.5;
+  // Derive a warm flame palette from the emotion color
+  const outer: [string, string, string] = [
+    mix(color, "#FFFFFF", 0.55),
+    color,
+    mix(color, "#1C100B", 0.55),
+  ];
+  const inner: [string, string] = [
+    mix(color, "#FFFFFF", 0.75),
+    mix(color, "#FFFFFF", 0.25),
+  ];
+  const [r, g, b] = hexToRgb(color);
+  const glowColor = `rgba(${r}, ${g}, ${b}, 0.55)`;
 
   // Flame flicker based on depth
-  const flickerIntensity = isDeepening ? "strong" : "gentle";
+  const flicker = isActive || isDeepening;
 
   // Status message
   const statusMessage = useMemo(() => {
@@ -39,88 +65,37 @@ export default function LivingEmber({ emberState, isActive }: LivingEmberProps) 
 
   return (
     <div className="flex flex-col items-center justify-center py-8 relative">
-      {/* The ember itself */}
-      <div className="relative flex items-center justify-center">
-        {/* Outer glow */}
-        <div
-          className="absolute rounded-full blur-3xl transition-all duration-1000 ease-out"
-          style={{
-            width: `${120 + glowSize}px`,
-            height: `${120 + glowSize}px`,
-            backgroundColor: color,
-            opacity: glowOpacity * 0.4,
-            transform: `scale(${scale})`,
-          }}
+      {/* The ember — a living flame tinted by your emotion */}
+      <div className="relative flex items-center justify-center h-44">
+        <EmberFlame
+          height={flameH}
+          outer={outer}
+          inner={inner}
+          glowColor={glowColor}
+          mood={scale}
+          sparks={isDeepening}
+          flicker={flicker}
+          backLayer={intensity > 30}
         />
-
-        {/* Middle glow */}
-        <div
-          className="absolute rounded-full blur-2xl transition-all duration-700 ease-out"
-          style={{
-            width: `${80 + glowSize * 0.7}px`,
-            height: `${80 + glowSize * 0.7}px`,
-            backgroundColor: color,
-            opacity: glowOpacity * 0.6,
-            transform: `scale(${scale})`,
-          }}
-        />
-
-        {/* Inner core */}
-        <div
-          className={`
-            relative rounded-full transition-all duration-500 ease-out
-            ${isActive ? "animate-pulse-soft" : ""}
-            ${isDeepening ? "animate-flicker" : ""}
-          `}
-          style={{
-            width: `${60 + intensity * 0.4}px`,
-            height: `${60 + intensity * 0.4}px`,
-            background: `radial-gradient(circle at 35% 35%, 
-              #FFF 0%, 
-              ${color} 40%, 
-              #C66A4D 80%,
-              #7C2D12 100%)`,
-            boxShadow: `
-              0 0 ${glowSize}px ${color},
-              inset 0 0 20px rgba(255, 255, 255, 0.3)
-            `,
-            transform: `scale(${scale})`,
-          }}
-        >
-          {/* Flame particles when deep */}
-          {isDeepening && (
-            <>
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-1 h-3 bg-amber-300 rounded-full animate-flame-rise opacity-70" />
-              <div
-                className="absolute -top-6 left-1/2 -translate-x-2 w-1 h-4 bg-orange-300 rounded-full animate-flame-rise opacity-60"
-                style={{ animationDelay: "0.3s" }}
-              />
-              <div
-                className="absolute -top-5 left-1/2 translate-x-1 w-1 h-3 bg-amber-200 rounded-full animate-flame-rise opacity-70"
-                style={{ animationDelay: "0.6s" }}
-              />
-            </>
-          )}
-        </div>
-
-        {/* Tiny sparks when writing */}
-        {isActive && wordCount > 0 && (
-          <>
-            <div
-              className="absolute w-1 h-1 bg-amber-200 rounded-full animate-spark-1"
-              style={{ top: "20%", left: "25%" }}
-            />
-            <div
-              className="absolute w-1 h-1 bg-orange-200 rounded-full animate-spark-2"
-              style={{ top: "30%", right: "25%" }}
-            />
-            <div
-              className="absolute w-1 h-1 bg-yellow-200 rounded-full animate-spark-3"
-              style={{ bottom: "30%", left: "20%" }}
-            />
-          </>
-        )}
       </div>
+
+      {/* Tiny sparks when writing */}
+      {isActive && wordCount > 0 && (
+        <>
+          <div
+            className="absolute w-1 h-1 bg-amber-200 rounded-full animate-spark-1"
+            style={{ top: "34%", left: "24%" }}
+          />
+          <div
+            className="absolute w-1 h-1 bg-orange-200 rounded-full animate-spark-2"
+            style={{ top: "42%", right: "23%" }}
+          />
+          <div
+            className="absolute w-1 h-1 bg-yellow-200 rounded-full animate-spark-3"
+            style={{ bottom: "38%", left: "18%" }}
+          />
+        </>
+      )}
 
       {/* Status message */}
       <div className="mt-8 text-center">

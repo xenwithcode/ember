@@ -71,24 +71,31 @@ export default function DisconnectButton({
         </div>
       )}
 
-      <button
-        onClick={onClick}
-        className="group relative"
-        title="Disconnect Mode — escape the scroll"
-      >
-        {/* Pulsing background */}
-        <div className="absolute inset-0 bg-red-500 rounded-full blur-md opacity-40 animate-pulse" />
+      <div className="flex flex-col items-start gap-2">
+        <button
+          onClick={onClick}
+          className="group relative"
+          title="Disconnect Mode — escape the scroll"
+        >
+          {/* Pulsing background */}
+          <div className="absolute inset-0 bg-red-500 rounded-full blur-md opacity-40 animate-pulse" />
 
-        {/* Main button */}
-        <div className="relative w-14 h-14 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center shadow-warm-xl group-hover:scale-110 transition-transform duration-200">
-          <Power className="w-6 h-6 text-white" />
-        </div>
+          {/* Main button */}
+          <div className="relative w-14 h-14 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center shadow-warm-xl group-hover:scale-110 transition-transform duration-200">
+            <Power className="w-6 h-6 text-white" />
+          </div>
+        </button>
 
-        {/* Label */}
-        <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 bg-coffee-900 text-white px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
-          Disconnect Mode
+        {/* Persistent label — so first-time users know what the button is */}
+        <div className="text-left">
+          <p className="text-[11px] font-bold text-red-500 leading-tight">
+            Disconnect Mode
+          </p>
+          <p className="text-[10px] text-warm-gray leading-tight">
+            escape the scroll — meet the real world
+          </p>
         </div>
-      </button>
+      </div>
     </div>
   );
 }
