@@ -193,7 +193,7 @@ export function getExpectationInfo(activity: Activity): ActivityExpectations {
  */
 export async function fetchActivities(): Promise<Activity[] | null> {
   try {
-    const response = await fetch("/api/activities/?limit=50", {
+    const response = await fetch("/api/activities?limit=50", {
       headers: { Accept: "application/json" },
     });
     if (!response.ok) return null;
