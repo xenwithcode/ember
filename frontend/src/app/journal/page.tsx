@@ -485,58 +485,6 @@ const handleJournalSubmit = useCallback(
       <div className="min-h-screen bg-cream-100 flex flex-col">
       <JournalHeader streakDays={stats.currentStreak} entryCount={entries.length} />
 
-      {/* Past Embers + Letters buttons (top right floating) */}
-      <div className="fixed top-20 right-6 z-30 flex flex-col gap-2">
-        <button
-          onClick={() => setViewMode("archive")}
-          className="btn-secondary flex items-center gap-2 shadow-warm-lg"
-        >
-          <History className="w-4 h-4" />
-          Past Embers
-          {entries.length > 0 && (
-            <span className="bg-terracotta-500 text-white text-xs px-2 py-0.5 rounded-full">
-              {entries.length}
-            </span>
-          )}
-        </button>
-
-        <button
-          onClick={() => setViewMode("letters")}
-          className="btn-secondary flex items-center gap-2 shadow-warm-lg"
-        >
-          <Mail className="w-4 h-4" />
-          Letters
-          {readyLetters.length > 0 && (
-            <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full animate-pulse">
-              {readyLetters.length}
-            </span>
-          )}
-        </button>
-
-        {hasWeeklyData && (
-          <button
-            onClick={() => setViewMode("patterns")}
-            className="btn-secondary flex items-center gap-2 shadow-warm-lg"
-          >
-            <Sparkles className="w-4 h-4" />
-            Pattern Reveal
-          </button>
-        )}
-
-        <button
-          onClick={() => setShowOnboarding(true)}
-          className="btn-secondary flex items-center gap-2 shadow-warm-lg"
-        >
-          <GraduationCap className="w-4 h-4" />
-          {onboardingProgress.isOnboarded
-            ? "7-Day Challenge"
-            : `Day ${onboardingProgress.currentDay}/7`}
-          <span className="bg-terracotta-500 text-white text-xs px-2 py-0.5 rounded-full">
-            {completionPercentage}%
-          </span>
-        </button>
-      </div>
-
       {/* Main Content: Split View */}
       <div className="flex-1 flex flex-col lg:flex-row max-w-7xl mx-auto w-full px-6 py-6 gap-6">
         {/* Left: Writing Zone */}
@@ -616,7 +564,59 @@ const handleJournalSubmit = useCallback(
         </div>
 
         {/* Right: Coach Zone */}
-        <div className="lg:w-1/2 flex flex-col">
+        <div className="lg:w-1/2 flex flex-col gap-6">
+          {/* Quick actions — in flow so they never overlap the content */}
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setViewMode("archive")}
+              className="btn-secondary flex items-center gap-2"
+            >
+              <History className="w-4 h-4" />
+              Past Embers
+              {entries.length > 0 && (
+                <span className="bg-terracotta-500 text-white text-xs px-2 py-0.5 rounded-full">
+                  {entries.length}
+                </span>
+              )}
+            </button>
+
+            <button
+              onClick={() => setViewMode("letters")}
+              className="btn-secondary flex items-center gap-2"
+            >
+              <Mail className="w-4 h-4" />
+              Letters
+              {readyLetters.length > 0 && (
+                <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full animate-pulse">
+                  {readyLetters.length}
+                </span>
+              )}
+            </button>
+
+            {hasWeeklyData && (
+              <button
+                onClick={() => setViewMode("patterns")}
+                className="btn-secondary flex items-center gap-2"
+              >
+                <Sparkles className="w-4 h-4" />
+                Pattern Reveal
+              </button>
+            )}
+
+            <button
+              onClick={() => setShowOnboarding(true)}
+              className="btn-secondary flex items-center gap-2"
+            >
+              <GraduationCap className="w-4 h-4" />
+              {onboardingProgress.isOnboarded
+                ? "7-Day Challenge"
+                : `Day ${onboardingProgress.currentDay}/7`}
+              <span className="bg-terracotta-500 text-white text-xs px-2 py-0.5 rounded-full">
+                {completionPercentage}%
+              </span>
+            </button>
+          </div>
+
           <CoachPanel
             messages={messages}
             isThinking={isAgentThinking}
