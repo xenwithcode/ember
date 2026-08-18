@@ -25,6 +25,19 @@ class Config:
     # Gemma model (privacy layer, Vertex global endpoint)
     GEMMA_MODEL: str = os.getenv("GEMMA_MODEL", "gemma-4-26b-a4b-it-maas")
 
+    # API security
+    # Shared secret required in the X-API-Key header. Empty = auth disabled
+    # (local dev). Set a value in Cloud Run to lock the API down.
+    EMBER_API_KEY: str = os.getenv("EMBER_API_KEY", "")
+    # Comma-separated list of allowed browser origins
+    CORS_ORIGINS: list = [
+        o.strip()
+        for o in os.getenv(
+            "CORS_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000"
+        ).split(",")
+        if o.strip()
+    ]
+
     # Firestore collections
     FIRESTORE_COLLECTION_USERS: str = os.getenv(
         "FIRESTORE_COLLECTION_USERS", "users"

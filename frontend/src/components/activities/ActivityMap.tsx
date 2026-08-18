@@ -26,13 +26,13 @@ export default function ActivityMap({ activities, hoveredActivityId }: ActivityM
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
 
-  const { isLoaded } = useJsApiLoader({
+  const { isLoaded, loadError } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: GOOGLE_MAPS_API_KEY,
   });
 
   // Fallback sin API key: lista de actividades con coordenadas en vez del mapa
-  if (!GOOGLE_MAPS_API_KEY) {
+  if (!GOOGLE_MAPS_API_KEY || loadError) {
     return (
       <div className="w-full h-full bg-cream-100 flex flex-col items-center justify-center p-6">
         <MapPin className="w-8 h-8 text-terracotta-500 mb-3" />
@@ -40,8 +40,20 @@ export default function ActivityMap({ activities, hoveredActivityId }: ActivityM
           {activities.length} activities near New York, NY
         </p>
         <p className="text-xs text-warm-light text-center mb-4">
-          Add <code className="bg-cream-200 px-1 rounded">NEXT_PUBLIC_GOOGLE_MAPS_API_KEY</code>{" "}
-          to your <code className="bg-cream-200 px-1 rounded">.env.local</code> to enable the map
+          {loadError ? (
+            <>
+              The map couldn&apos;t load, but here are the activities.{" "}
+              <code className="bg-cream-200 px-1 rounded">
+                NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+              </code>{" "}
+              may be invalid or restricted.
+            </>
+          ) : (
+            <>
+              Add <code className="bg-cream-200 px-1 rounded">NEXT_PUBLIC_GOOGLE_MAPS_API_KEY</code>{" "}
+              to your <code className="bg-cream-200 px-1 rounded">.env.local</code> to enable the map
+            </>
+          )}
         </p>
         <div className="w-full max-w-sm space-y-2">
           {activities.slice(0, 5).map((activity) => (

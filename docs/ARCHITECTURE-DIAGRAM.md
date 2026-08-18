@@ -52,15 +52,48 @@ This architecture ensures **maximum empathy with zero risk of data exposure**.
 
 ---
 
+## 🧠 Memory Bank: Persistent Cross-Session Memory
+
+Every journal entry is persisted to **Firestore** and the coach always sees the
+user's history before responding:
+
+```
+User's intimate text
+↓
+[🛡️ Gemma 4 - Privacy Layer]
+↓
+Anonymized, safe text
+↓
+[🧠 Memory Bank (Firestore)]
+streak · total entries · week vs week · emotional trend · recent excerpts
+↓
+[🤖 Gemini 3.5 Flash Lite - Agent Layer]
+Responds WITH the user's history in context
+↓
+[Entry persisted (anonymized) + response]
+↓
+Frontend caches in localStorage (offline only — Firestore is the source of truth)
+```
+
+- **Live conversation**: `InMemorySessionService` keeps multi-turn context while
+  the Cloud Run process lives (stable `session_id` per user).
+- **Long-term memory**: `journal_service.build_memory_block()` injects the
+  user's real history into every journal response, so Ember can truthfully say
+  *"This is your 4th entry this week"* or *"Your emotional trend is improving"*.
+- **Endpoints**: `POST /api/chat/journal` (full flow) · `POST/GET/DELETE
+  /api/journal/entries` · `GET /api/journal/stats` · `GET /api/journal/memory`
+
+---
+
 ## Diagram Sources
 
 | Diagram | Source | Description |
 |---------|--------|-------------|
-| Hybrid (Gemma + Gemini) | `docs/architecture-hybrid.mermaid` | Updated dual-layer architecture with Privacy Shield |
-| Original overview | README "Architecture" section | Full system overview (Frontend → Cloud Run → Agents → Firestore) |
+| System overview (with Memory Bank) | `docs/architecture.mermaid` | Frontend → Cloud Run → Privacy Shield → Memory Bank → Coach → Firestore |
+| Hybrid (Gemma + Gemini) | `docs/architecture-hybrid.mermaid` | Dual-layer architecture with Privacy Shield |
 
 **Mmdc export example:**
 
 ```bash
-npx @mermaid-js/mermaid-cli -i docs/architecture-hybrid.mermaid -o docs/architecture-hybrid.png
+npx @mermaid-js/mermaid-cli -i docs/architecture.mermaid -o docs/architecture.png
 ```

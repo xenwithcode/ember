@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   Compass,
   MapPin,
@@ -8,8 +8,10 @@ import {
   SlidersHorizontal,
   List,
   Map,
+  ShieldCheck,
 } from "lucide-react";
 import { mockActivities, Activity, ActivityCategory } from "@/data/activities";
+import { fetchActivities } from "@/lib/activityApi";
 import CategoryFilters from "@/components/activities/CategoryFilters";
 import ActivityCard from "@/components/activities/ActivityCard";
 import ActivityMap from "@/components/activities/ActivityMap";
@@ -21,10 +23,26 @@ export default function ActivitiesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"list" | "split">("split");
   const [hoveredActivityId, setHoveredActivityId] = useState<string | null>(null);
+  const [activities, setActivities] = useState<Activity[]>(mockActivities);
+  const [catalogSource, setCatalogSource] = useState<"mock" | "firestore">("mock");
+
+  useEffect(() => {
+    let cancelled = false;
+    void fetchActivities().then((live) => {
+      if (cancelled) return;
+      if (live && live.length > 0) {
+        setActivities(live);
+        setCatalogSource("firestore");
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Filter activities
   const filteredActivities = useMemo(() => {
-    return mockActivities.filter((activity) => {
+    return activities.filter((activity) => {
       const matchesCategory =
         selectedCategory === "all" || activity.category === selectedCategory;
       const matchesAnxiety =
@@ -37,7 +55,7 @@ export default function ActivitiesPage() {
 
       return matchesCategory && matchesAnxiety && matchesSearch;
     });
-  }, [selectedCategory, selectedAnxiety, searchQuery]);
+  }, [selectedCategory, selectedAnxiety, searchQuery, activities]);
 
   return (
     <MainLayout>
@@ -57,6 +75,12 @@ export default function ActivitiesPage() {
                 <p className="text-xs text-warm-light">
                   Real-world experiences, curated for you
                 </p>
+                {catalogSource === "firestore" && (
+                  <span className="badge bg-emerald-100 text-emerald-700 mt-1">
+                    <ShieldCheck className="w-3 h-3 mr-1 inline" />
+                    Live catalog
+                  </span>
+                )}
               </div>
             </div>
 

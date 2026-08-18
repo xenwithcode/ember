@@ -237,9 +237,14 @@ def seed_activities():
         activity.updated_at = datetime.now(timezone.utc)
         activity.status = ActivityStatus.UPCOMING
 
-        doc_ref = db.client.collection(config.FIRESTORE_COLLECTION_CATALOG).document()
+        # Stable document id = slug, so GET /api/activities/<slug> works and
+        # links stay consistent between the frontend catalog and Firestore.
+        activity.id = activity.slug or f"activity-{i}"
+        doc_ref = db.client.collection(
+            config.FIRESTORE_COLLECTION_CATALOG
+        ).document(activity.id)
         doc_ref.set(activity.model_dump())
-        print(f"  ✅ {i+1}/{len(activities)}: {activity.title}")
+        print(f"  ✅ {i+1}/{len(activities)}: {activity.title} ({activity.id})")
 
     print(f"\n🎉 Done! Seeded {len(activities)} activities.")
     print("📍 All activities are set in New York City for the demo.")

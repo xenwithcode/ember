@@ -443,6 +443,32 @@ Unlike a single-model design, this layer also protects the user in a crisis: det
 
 See [docs/ARCHITECTURE-DIAGRAM.md](docs/ARCHITECTURE-DIAGRAM.md) for full technical details.
 
+### 🧠 Memory Bank: Persistent Cross-Session Memory
+
+Every journal entry is persisted to **Firestore** (`journal_entries/{entry_id}`), not
+just the browser. On every writing session, Ember:
+
+1. **Anonymizes + crisis-checks** the new text (Gemma 4 privacy layer)
+2. **Loads the Memory Block** from Firestore: streak, total entries, weekly
+   comparison, emotional trend, and excerpts of recent entries
+3. **Injects the Memory Block into the coach's context** (Gemini), so Ember can
+   truthfully say: *"This is your 4th entry this week"*, *"You wrote about the
+   same worry last Monday"*, or *"Your emotional trend is improving"*
+4. **Persists the anonymized entry** with the coach's response
+
+The frontend keeps `localStorage` only as an offline cache — Firestore is the
+source of truth, and the stored conversation session (`InMemorySessionService`)
+accumulates multi-turn context while the backend process lives.
+
+| Endpoint | Purpose |
+|----------|---------|
+| `POST /api/chat/journal` | Full flow: privacy → memory → agent → persist |
+| `POST /api/journal/entries` | Save an entry (offline migration) |
+| `GET /api/journal/entries?user_id=` | List a user's history |
+| `GET /api/journal/stats?user_id=` | Streaks, words, weekly comparison, mood trend |
+| `GET /api/journal/memory?user_id=` | The agent's long-term memory block |
+| `DELETE /api/journal/entries/{id}` | Remove an entry |
+
 ### Quick Test
 
 ```bash
@@ -495,7 +521,7 @@ what works best for their moment — or their accessibility needs.
 | Page | Description | Key Features |
 |------|-------------|-------------|
 | `/` | Landing page | Problem narrative, value prop, scenarios, demo mode |
-| `/journal` | Interactive journal | Split view, Living Ember, voice I/O, 5 rituals, breathing, **Disconnect Mode** |
+| `/journal` | Interactive journal | Split view, Living Ember, voice I/O, 5 rituals, breathing, **Disconnect Mode**, **real Gemini coach with long-term memory** |
 | `/activities` | Activity catalog | Google Maps, filters, geolocation, category badges |
 | `/activities/[id]` | Activity detail | Registration, invite friend, what to expect |
 | `/friends` | Inner Circle | Friend management, AI-drafted invitations, RSVP tracking |
@@ -614,13 +640,28 @@ Screenshots of the live deployment:
 ### Quick Deploy
 
 ```bash
-# One-command deployment
+# One-command deployment (backend)
 gcloud run deploy ember-api \
   --source ./backend \
   --platform managed \
   --region us-central1 \
-  --allow-unauthenticated
+  --allow-unauthenticated \
+  --set-env-vars EMBER_API_KEY=$(openssl rand -hex 32),CORS_ORIGINS=https://<tu-frontend-domain>
+
+# Frontend (Next.js standalone — usa el mismo EMBER_API_KEY)
+gcloud run deploy ember-frontend \
+  --source ./frontend \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --set-env-vars EMBER_API_KEY=<el-mismo-secreto>,BACKEND_URL=https://ember-api-xxxx.us-central1.run.app
 ```
+
+> **🔐 API Security:** Set `EMBER_API_KEY` in Cloud Run (same value in backend and
+> frontend). The backend rejects every request without `X-API-Key` (HTTP 401),
+> and the frontend injects the header server-side via its `/api` proxy, so the
+> secret never reaches the browser. If you don't set it, the API stays open —
+> fine for local dev, dangerous in production.
 
 ## Cost Management
 
@@ -733,7 +774,8 @@ npm run dev
 ```bash
 cd ../backend
 gcloud run deploy ember-api --source . --region us-central1 \
-  --allow-unauthenticated --project <PROJECT_ID> --max-instances 1 --memory 512Mi
+  --allow-unauthenticated --project <PROJECT_ID> --max-instances 1 --memory 512Mi \
+  --set-env-vars EMBER_API_KEY=<secret>,CORS_ORIGINS=<https://tu-dominio>
 ```
 
 ## 📂 Project Structure

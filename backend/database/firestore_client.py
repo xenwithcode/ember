@@ -15,6 +15,21 @@ except ImportError:
     _FIRESTORE_AVAILABLE = False
 
 
+class _InMemorySnapshot:
+    """Firestore-like snapshot (exists, id, to_dict) for stub reads."""
+
+    def __init__(self, doc_id: str, data: dict | None):
+        self.id = doc_id
+        self._data = data
+
+    @property
+    def exists(self) -> bool:
+        return self._data is not None
+
+    def to_dict(self) -> dict:
+        return self._data
+
+
 class _InMemoryCollection:
     """Minimal in-memory stand-in for a Firestore collection."""
 
@@ -37,10 +52,23 @@ class _InMemoryCollection:
         return self
 
     def get(self):
-        return list(self._docs.values())
+        return [self._snapshot(doc_id) for doc_id, data in self._docs.items()]
 
     def stream(self):
         return self.get()
+
+    def _snapshot(self, doc_id: str) -> "_InMemorySnapshot":
+        return _InMemorySnapshot(doc_id, self._docs.get(doc_id))
+
+
+class _MissingSnapshot:
+    """Firestore-like snapshot for a document that does not exist."""
+
+    exists = False
+    id = ""
+
+    def to_dict(self):
+        return None
 
 
 class _InMemoryDocumentRef:
@@ -49,37 +77,31 @@ class _InMemoryDocumentRef:
     def __init__(self, collection: "_InMemoryCollection", doc_id: str):
         self.collection = collection
         self.id = doc_id
-        self._data: dict | None = collection._docs.get(doc_id)
 
-    def get(self):
-        if self._data is None:
-            from google.cloud.firestore_v1.document import DocumentSnapshot
-            from google.cloud.firestore_v1.base_document import DocumentReference
-
-            reference = DocumentReference(self.collection.name, self.id, (), None)
-            return DocumentSnapshot(reference, None, False, False, None, None)
-        return self._data
+    def get(self) -> _InMemorySnapshot:
+        data = self.collection._docs.get(self.id)
+        if data is None:
+            return _MissingSnapshot()
+        return _InMemorySnapshot(self.id, data)
 
     def set(self, data: dict):
         self.collection._docs[self.id] = data
-        self._data = data
 
     def create(self, data: dict):
         self.collection._docs[self.id] = data
-        self._data = data
 
     def update(self, data: dict):
-        if self._data is None:
-            self._data = {}
-        self._data.update(data)
-        self.collection._docs[self.id] = self._data
+        current = self.collection._docs.get(self.id)
+        if current is None:
+            current = {}
+        current.update(data)
+        self.collection._docs[self.id] = current
 
     def delete(self):
         self.collection._docs.pop(self.id, None)
-        self._data = None
 
     def exist(self) -> bool:
-        return self._data is not None
+        return self.id in self.collection._docs
 
 
 class _InMemoryClient:

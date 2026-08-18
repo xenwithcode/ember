@@ -15,15 +15,24 @@ import LetterMailbox from "@/components/journal/LetterMailBox";
 import OnboardingView from "@/components/journal/OnboardingView";
 import OnboardingProgress from "@/components/journal/OnboardingProgress";
 import { useJournalStorage } from "@/hooks/useJournalStorage";
+import { EmotionKey } from "@/hooks/useEmberAnalysis";
 import { usePatternDetection } from "@/hooks/usePatternDetection";
 import { useWeeklyPatterns } from "@/hooks/useWeeklyPatterns";
 import { useSparkChallenges } from "@/hooks/useSparkChallenges";
 import { useFutureLetters } from "@/hooks/useFutureLetters";
-import { useOnboarding } from "@/hooks/useOnboarding";
+import {
+  useOnboarding,
+  OnboardingProgress as OnboardingProgressInfo,
+  OnboardingDayContent,
+} from "@/hooks/useOnboarding";
 import PatternRevealView from "@/components/journal/PatternRevealView";
 import MainLayout from "@/components/layout/MainLayout";
 import PrivacyShield from "@/components/journal/PrivacyShield";
 import { usePrivacyLayer, PrivacyCheckResult } from "@/hooks/usePrivacyLayer";
+import {
+  submitJournalEntry,
+  getOrCreateSessionId,
+} from "@/lib/journalApi";
 import DisconnectButton from "@/components/disconnect/DisconnectButton";
 import DisconnectModal from "@/components/disconnect/DisconnectModal";
 import { useDisconnectMode } from "@/hooks/useDisconnectMode";
@@ -48,6 +57,7 @@ export default function JournalPage() {
   const [isAgentThinking, setIsAgentThinking] = useState(false);
   const [showBreathing, setShowBreathing] = useState(false);
   const [viewMode, setViewMode] = useState<"write" | "archive" | "letters" | "compose" | "patterns">("write");
+  const [sessionId, setSessionId] = useState<string | null>(getOrCreateSessionId);
 
   // Future letters (Letters to Future You)
   const {
@@ -60,12 +70,13 @@ export default function JournalPage() {
     stats: letterStats,
   } = useFutureLetters();
 
-  // Persistencia del diario
+  // Persistencia del diario (localStorage cache + Firestore Memory Bank)
   const {
     entries,
     addEntry,
     deleteEntry,
     stats,
+    userId,
   } = useJournalStorage();
 
   // Pattern detection & spark challenges
@@ -136,75 +147,197 @@ export default function JournalPage() {
     }
   }, [entries, patterns, hasEnoughData, challenges, generateChallenge]);
 
-  const handleJournalSubmit = useCallback(
+  // Shared analysis shape passed from JournalEditor
+interface EntryAnalysis {
+  wordCount: number;
+  writingTimeSeconds: number;
+  dominantEmotion: EmotionKey;
+  emotionScores: Record<EmotionKey, number>;
+  intensity: number;
+}
+
+// Local fallback when the backend is unreachable (demo/offline):
+// privacy passthrough + a templated coach response. Never blocks the user.
+const localFallback = async (
+  text: string,
+  ritual: Ritual,
+  emberAnalysis: EntryAnalysis,
+  {
+    checkPrivacy,
+    addEntry,
+    setPrivacyInfo,
+    setShowCrisis,
+    setMessages,
+    onboardingProgress,
+    todayContent,
+    isDayCompleted,
+    completeDay,
+  }: {
+    checkPrivacy: (text: string) => Promise<PrivacyCheckResult | null>;
+    addEntry: ReturnType<typeof useJournalStorage>["addEntry"];
+    setPrivacyInfo: (v: PrivacyCheckResult | null) => void;
+    setShowCrisis: (v: boolean) => void;
+    setMessages: (fn: (prev: JournalMessage[]) => JournalMessage[]) => void;
+    onboardingProgress: OnboardingProgressInfo;
+    todayContent: OnboardingDayContent | null;
+    isDayCompleted: (day: number) => boolean;
+    completeDay: (day: number) => void;
+  }
+) => {
+  const privacyResult = await checkPrivacy(text);
+  if (!privacyResult) return;
+  setPrivacyInfo(privacyResult);
+
+  if (privacyResult.crisisDetected) {
+    setShowCrisis(true);
+    return;
+  }
+
+  const safeText = privacyResult.anonymizedText;
+  const userMessage: JournalMessage = {
+    id: Date.now().toString(),
+    role: "user",
+    content: safeText,
+    timestamp: new Date(),
+  };
+  setMessages((prev) => [...prev, userMessage]);
+
+  const agentResponse = generateAgentResponse(safeText, ritual);
+  const savedEntry = addEntry({
+    text: safeText,
+    ritual,
+    wordCount: emberAnalysis.wordCount,
+    writingTimeSeconds: emberAnalysis.writingTimeSeconds,
+    dominantEmotion: emberAnalysis.dominantEmotion,
+    emotionScores: emberAnalysis.emotionScores,
+    intensity: emberAnalysis.intensity,
+    agentResponse: agentResponse.content,
+    agentEmotions: agentResponse.emotions,
+    privacyInfo: {
+      piiRedacted: privacyResult.piiRedacted,
+      moodDetected: privacyResult.moodDetected,
+      moodScore: privacyResult.moodScore,
+      processingTimeMs: privacyResult.processingTimeMs,
+    },
+  });
+
+  const agentMessage: JournalMessage = {
+    ...agentResponse,
+    entryId: savedEntry.id,
+  };
+  setMessages((prev) => [...prev, agentMessage]);
+
+  if (
+    !onboardingProgress.isOnboarded &&
+    todayContent &&
+    !isDayCompleted(todayContent.day)
+  ) {
+    completeDay(todayContent.day);
+  }
+};
+
+const handleJournalSubmit = useCallback(
     async (
       text: string,
       ritual: Ritual,
-      emberAnalysis: {
-        wordCount: number;
-        writingTimeSeconds: number;
-        dominantEmotion: any;
-        emotionScores: any;
-        intensity: number;
-      }
+      emberAnalysis: EntryAnalysis
     ) => {
-      // 🛡️ STEP 1: Privacy Layer check FIRST (Gemma 4)
-      const privacyResult = await checkPrivacy(text);
-      if (!privacyResult) return;
-
-      // 🚨 STEP 2: If crisis detected, show alert and skip the agent
-      if (privacyResult.crisisDetected) {
-        setPrivacyInfo(privacyResult);
-        setShowCrisis(true);
-        return;
-      }
-
-      // 🤖 STEP 3: Use ANONYMIZED text for the chat + storage
-      const safeText = privacyResult.anonymizedText;
-      setPrivacyInfo(privacyResult);
-
-      // 1. Add user message to chat (anonymized)
-      const userMessage: JournalMessage = {
-        id: Date.now().toString(),
-        role: "user",
-        content: safeText,
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, userMessage]);
       setIsAgentThinking(true);
-
-      // 2. Simulate agent thinking
-      setTimeout(() => {
-        const agentResponse = generateAgentResponse(safeText, ritual);
-
-        // 3. Save entry to storage (persistencia) — ANONYMIZED + privacy info
-        const savedEntry = addEntry({
-          text: safeText,
-          ritual,
-          wordCount: emberAnalysis.wordCount,
-          writingTimeSeconds: emberAnalysis.writingTimeSeconds,
-          dominantEmotion: emberAnalysis.dominantEmotion,
-          emotionScores: emberAnalysis.emotionScores,
+      try {
+        const result = await submitJournalEntry({
+          message: text,
+          user_id: userId,
+          session_id: sessionId,
+          ritual_id: ritual.id,
+          ritual_name: ritual.name,
+          ritual_emoji: ritual.emoji,
+          word_count: emberAnalysis.wordCount,
+          writing_time_seconds: emberAnalysis.writingTimeSeconds,
+          dominant_emotion: emberAnalysis.dominantEmotion,
+          emotion_scores: emberAnalysis.emotionScores,
           intensity: emberAnalysis.intensity,
-          agentResponse: agentResponse.content,
-          agentEmotions: agentResponse.emotions,
-          privacyInfo: {
-            piiRedacted: privacyResult.piiRedacted,
-            moodDetected: privacyResult.moodDetected,
-            moodScore: privacyResult.moodScore,
-            processingTimeMs: privacyResult.processingTimeMs,
-          },
         });
 
-        // 4. Add agent response to chat with link to saved entry
+        if (!result) {
+          await localFallback(text, ritual, emberAnalysis, {
+            checkPrivacy,
+            addEntry,
+            setPrivacyInfo,
+            setShowCrisis,
+            setMessages,
+            onboardingProgress,
+            todayContent,
+            isDayCompleted,
+            completeDay,
+          });
+          return;
+        }
+
+        if (result.sessionId) setSessionId(result.sessionId);
+
+        // Privacy Shield info comes from the backend (Gemma layer)
+        setPrivacyInfo({
+          anonymizedText: result.anonymizedText,
+          piiRedacted: result.privacyInfo.piiRedacted,
+          moodDetected: result.privacyInfo.moodDetected,
+          moodScore: result.privacyInfo.moodScore,
+          crisisDetected: result.crisisAlert !== null,
+          crisisAlert: result.crisisAlert,
+          processingTimeMs: result.privacyInfo.processingTimeMs,
+          shieldActive: result.privacyInfo.shieldActive,
+        });
+
+        // 🚨 Crisis detected → show alert, do NOT save the entry
+        if (result.crisisAlert) {
+          setShowCrisis(true);
+          return;
+        }
+
+        // 1. Add user message to chat (anonymized by the Privacy Shield)
+        const userMessage: JournalMessage = {
+          id: Date.now().toString(),
+          role: "user",
+          content: result.anonymizedText,
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, userMessage]);
+
+        // 2. Save entry — the backend already persisted it in Firestore,
+        //    so keep the same id (skipServerSave = true)
+        const savedEntry = addEntry(
+          {
+            text: result.anonymizedText,
+            ritual,
+            wordCount: emberAnalysis.wordCount,
+            writingTimeSeconds: emberAnalysis.writingTimeSeconds,
+            dominantEmotion: emberAnalysis.dominantEmotion,
+            emotionScores: emberAnalysis.emotionScores,
+            intensity: emberAnalysis.intensity,
+            agentResponse: result.response,
+            agentEmotions: [emberAnalysis.dominantEmotion],
+            privacyInfo: {
+              piiRedacted: result.privacyInfo.piiRedacted,
+              moodDetected: result.privacyInfo.moodDetected,
+              moodScore: result.privacyInfo.moodScore,
+              processingTimeMs: result.privacyInfo.processingTimeMs,
+            },
+          },
+          true, // already saved by the backend agent flow
+          result.entry?.id || undefined
+        );
+
+        // 3. Add agent response to chat with link to the saved entry
         const agentMessage: JournalMessage = {
-          ...agentResponse,
+          id: (Date.now() + 1).toString(),
+          role: "agent",
+          content: result.response || "I'm here with you.",
+          timestamp: new Date(),
+          emotions: [emberAnalysis.dominantEmotion],
           entryId: savedEntry.id,
         };
         setMessages((prev) => [...prev, agentMessage]);
-        setIsAgentThinking(false);
 
-        // After saving the entry, check if it completes an onboarding day
+        // 4. After saving the entry, check onboarding day completion
         if (
           !onboardingProgress.isOnboarded &&
           todayContent &&
@@ -212,9 +345,33 @@ export default function JournalPage() {
         ) {
           completeDay(todayContent.day);
         }
-      }, 2000);
+      } catch (error) {
+        console.warn("Agent flow failed, falling back locally:", error);
+        await localFallback(text, ritual, emberAnalysis, {
+          checkPrivacy,
+          addEntry,
+          setPrivacyInfo,
+          setShowCrisis,
+          setMessages,
+          onboardingProgress,
+          todayContent,
+          isDayCompleted,
+          completeDay,
+        });
+      } finally {
+        setIsAgentThinking(false);
+      }
     },
-    [addEntry, checkPrivacy, onboardingProgress, todayContent, isDayCompleted, completeDay]
+    [
+      addEntry,
+      checkPrivacy,
+      userId,
+      sessionId,
+      onboardingProgress,
+      todayContent,
+      isDayCompleted,
+      completeDay,
+    ]
   );
 
   // Show archive view

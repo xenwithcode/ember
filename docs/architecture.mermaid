@@ -1,0 +1,90 @@
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#FDFBF7',
+    'primaryTextColor': '#2C2523',
+    'primaryBorderColor': '#E28766',
+    'lineColor': '#E28766',
+    'fontSize': '14px'
+  }
+}}%%
+
+graph TB
+    User["👤 User<br/>(Young Adult 18-23)"]
+
+    subgraph Frontend["🎨 FRONTEND — Next.js 16 + React 19"]
+        JournalUI["Journal (text / voice)<br/>Living Ember + Emotion Analysis"]
+        LocalCache["localStorage<br/>(offline cache only)"]
+        Proxy["Server-side proxy<br/>(injects X-API-Key)"]
+        CoachPanel["Coach Panel<br/>(conversation UI)"]
+        JournalUI --> LocalCache
+        JournalUI --- CoachPanel
+    end
+
+    subgraph Backend["⚙️ BACKEND — Cloud Run (FastAPI + Google ADK)"]
+        Submission["POST /api/chat/journal<br/>(one call: privacy + memory + coach + persist)"]
+        JournalAPI["Journal API<br/>POST/GET/DELETE entries · stats · memory"]
+        PrivacyShield["🔒 PRIVACY SHIELD<br/>Gemma 4 (Vertex AI)"]
+        Anonymized["Anonymized text + crisis check"]
+        MemoryBank["🧠 MEMORY BANK BUILDER<br/>reads user history from Firestore"]
+        Coach["🤖 Resilience Coach Agent<br/>(Gemini 3.5 Flash Lite via ADK)"]
+        Session["Live conversation<br/>InMemorySessionService<br/>(multi-turn while process lives)"]
+        Persist["Entry persisted<br/>(anonymized, with coach reply)"]
+
+        Submission --> PrivacyShield
+        PrivacyShield --> Anonymized
+        Anonymized --> Coach
+        MemoryBank -->|"streak · total entries · week vs week<br/>emotional trend · recent excerpts"| Coach
+        Coach --> Session
+        Session --> Coach
+        Coach -->|"empathetic response"| Submission
+        Submission --> Persist
+    end
+
+    subgraph GoogleCloud["☁️ GOOGLE CLOUD SERVICES"]
+        Firestore["Firestore<br/>journal_entries / users<br/>(THE Memory Bank)"]
+        VertexAI["Vertex AI<br/>(Gemma + Gemini)"]
+        Maps["Google Maps API"]
+        Calendar["Google Calendar API"]
+        Gmail["Gmail API"]
+    end
+
+    subgraph RealWorld["🌍 REAL WORLD"]
+        Activity["Face-to-Face Activity"]
+    end
+
+    %% Journal flow (the living journal)
+    User -->|"Intimate text or voice"| JournalUI
+    JournalUI -->|"POST /api/chat/journal (raw text)"| Submission
+    JournalUI -->|"sync / cache fallback"| JournalAPI
+    JournalAPI -->|"read/write entries"| Firestore
+    Persist -->|"write anonymous entry"| Firestore
+    Firestore -->|"long-term memory read"| MemoryBank
+    Submission -->|"response + anonymized text + privacy info"| JournalUI
+    JournalUI -->|"Live Ember color / shield feedback"| User
+    Proxy -.->|"routes all /api/* with API key"| Backend
+
+    %% Crisis path
+    PrivacyShield -->|"🚨 crisis → 988 lifeline resources"| User
+
+    %% Activity ecosystem (agents-to-actions)
+    Coach -->|"suggests matched activity"| Activity
+    User -->|"attends (2+ hr)"| Activity
+    Maps -->|"geolocation"| Coach
+    Calendar -->|"scheduling"| Coach
+    Gmail -->|"friend invitations"| Coach
+
+    %% Styles
+    classDef privacyStyle fill:#10B981,stroke:#047857,color:#fff
+    classDef agentStyle fill:#E28766,stroke:#C66A4D,color:#fff
+    classDef memoryStyle fill:#7C3AED,stroke:#5B21B6,color:#fff
+    classDef cloudStyle fill:#4285F4,stroke:#1E40AF,color:#fff
+    classDef realStyle fill:#F59E0B,stroke:#B45309,color:#fff
+    classDef frontStyle fill:#FDFBF7,stroke:#E28766,color:#2C2523
+
+    class PrivacyShield privacyStyle
+    class Coach,Session agentStyle
+    class MemoryBank,Firestore,Persist memoryStyle
+    class Maps,Calendar,Gmail,VertexAI cloudStyle
+    class Activity realStyle
+    class JournalUI,CoachPanel,LocalCache,Proxy frontStyle

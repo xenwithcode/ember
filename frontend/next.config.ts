@@ -15,17 +15,9 @@ const nextConfig: NextConfig = {
     ],
   },
 
-  // Redirecciones para el backend (evita problemas de CORS).
-  // En producción apunta al backend de Cloud Run vía BACKEND_URL.
-  async rewrites() {
-    const backend = process.env.BACKEND_URL || "http://localhost:8080";
-    return [
-      {
-        source: "/api/:path*",
-        destination: `${backend}/api/:path*`,
-      },
-    ];
-  },
+  // NOTA: el proxy a /api/* se maneja en src/app/api/[...path]/route.ts
+  // (route handler), porque los rewrites no permiten inyectar headers.
+  // Ese proxy agrega X-API-Key server-side para proteger el backend.
 };
 
 export default nextConfig;

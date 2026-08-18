@@ -109,9 +109,19 @@ class ActivityCatalogService:
 
         activities = []
         for doc in query.stream():
-            activities.append(Activity(**doc.to_dict()))
+            activities.append(self._activity_from_doc(doc))
 
         return activities
+
+    @staticmethod
+    def _activity_from_doc(doc) -> Activity:
+        """Build an Activity and fold the Firestore document id into it so the
+        API response always carries a stable, linkable id."""
+        data = doc.to_dict()
+        activity = Activity(**data)
+        if not activity.id:
+            activity.id = doc.id
+        return activity
 
     def find_activities_near_location(
         self,
@@ -149,7 +159,7 @@ class ActivityCatalogService:
 
         activities = []
         for doc in query.stream():
-            activity = Activity(**doc.to_dict())
+            activity = self._activity_from_doc(doc)
 
             # Check longitude bounds
             if min_lng <= activity.longitude <= max_lng:
