@@ -745,7 +745,7 @@
         <path id="flow-coach-gemini" d="M 1020 205 L 1140 205" 
               class="flow-line flow-journal" 
               stroke="var(--accent-gemini)" marker-end="url(#arrow-gemini)" />
-        <text x="1035" y="195" class="flow-label" fill="var(--accent-gemini)">ADK Runner + Gemini 3.5</text>
+        <text x="1035" y="195" class="flow-label" fill="var(--accent-gemini)">ADK Swarm × Gemini 3.5</text>
 
         <!-- 9. Resilience Coach -> Activity Catalog -->
         <path id="flow-coach-activity" d="M 885 245 L 885 315" 
@@ -843,12 +843,12 @@
               fill="var(--bg-card)" stroke="var(--accent-ember)" />
         <circle cx="35" cy="35" r="16" fill="var(--accent-ember-glow)" />
         <text x="27" y="42" font-size="18">🤖</text>
-        <text x="65" y="32" class="node-title">Resilience Coach Agent</text>
+        <text x="65" y="32" class="node-title">Multi-Agent Swarm (ADK)</text>
         <text x="65" y="48" class="node-subtitle">Google ADK + Gemini 3.5 Flash Lite</text>
-        <text x="20" y="72" class="node-desc">Collaborative Empathy & Action Coach</text>
-        <text x="20" y="88" class="node-desc">Multi-turn InMemorySessionService</text>
+        <text x="20" y="72" class="node-desc">Coach · Logistics Scout · Synthesis Engine</text>
+        <text x="20" y="88" class="node-desc">Socratic chat + async Briefing &amp; Scout plans</text>
         <rect x="195" y="12" width="63" height="18" rx="4" fill="var(--accent-ember-glow)" />
-        <text x="202" y="24" class="node-tag" fill="var(--accent-ember)">ADK AGENT</text>
+        <text x="202" y="24" class="node-tag" fill="var(--accent-ember)">ADK SWARM</text>
       </g>
 
       <!-- NODE 5: Memory Bank Builder -->
@@ -915,8 +915,8 @@
         <text x="27" y="42" font-size="18">🔥</text>
         <text x="65" y="32" class="node-title">Google Cloud Firestore</text>
         <text x="65" y="48" class="node-subtitle">Persistent Source of Truth</text>
-        <text x="20" y="70" class="node-desc">Collections: journal_entries, users</text>
-        <text x="20" y="86" class="node-desc">activities, invitations · In-memory stub</text>
+        <text x="20" y="70" class="node-desc">journal_entries, users, activities</text>
+        <text x="20" y="86" class="node-desc">morning_briefings, scout_plans · stub</text>
         <rect x="195" y="12" width="63" height="18" rx="4" fill="rgba(168, 85, 247, 0.15)" />
         <text x="203" y="24" class="node-tag" fill="var(--accent-memory)">DATABASE</text>
       </g>
@@ -989,7 +989,7 @@
       </div>
       <div class="legend-item">
         <div class="legend-dot" style="background: var(--accent-ember);"></div>
-        <span>ADK Agent (Gemini 3.5)</span>
+        <span>ADK Multi-Agent Swarm (Gemini 3.5)</span>
       </div>
       <div class="legend-item">
         <div class="legend-dot" style="background: var(--accent-memory);"></div>
@@ -1071,14 +1071,14 @@
       },
       "resilience-coach": {
         icon: "🤖",
-        category: "ADK Core Intelligence (Layer 2)",
-        title: "Resilience Coach Agent",
+        category: "ADK Multi-Agent Swarm (Layer 2)",
+        title: "Resilience Coach — Swarm Lead",
         tech: "Google ADK (Agent Development Kit) + Gemini 3.5 Flash Lite",
-        desc: "Collaborative partner agent (not a therapist) tailored for young adults (18-23). Takes anonymized text combined with the user's historical Memory Bank block, generates compassionate reflections, and recommends one low-pressure, real-world action to rebuild confidence.",
+        desc: "Lead of a Multi-Agent Swarm. The Socratic Resilience Coach partners with the user in real time, while two specialist agents work beyond the chat loop: the Logistics Scout (low-friction arrival tip, 10-minute safe exit, friend invitations) and the Synthesis Engine (overnight Dream Engine that produces the Morning Briefing and the Emotional Constellation).",
         meta: [
           { label: "Foundation Model", val: "Gemini 3.5 Flash Lite on Vertex AI" },
-          { label: "Framework", val: "google-adk Agent, Runner, Content parts" },
-          { label: "Session State", val: "Multi-turn InMemorySessionService" }
+          { label: "Swarm Agents", val: "Coach · Logistics Scout · Synthesis Engine" },
+          { label: "Beyond Chat", val: "Async Morning Briefing + Scout Blueprint + Constellation" }
         ]
       },
       "memory-bank": {
@@ -1134,9 +1134,9 @@
         category: "Cloud Database",
         title: "Google Cloud Firestore",
         tech: "Firestore NoSQL Database (Google Cloud)",
-        desc: "Scalable NoSQL cloud database that serves as the persistent source of truth. Stores anonymized journal entries, user profiles, activity catalogs, and invitation logs. Includes an in-memory stub fallback for effortless local testing.",
+        desc: "Scalable NoSQL cloud database that serves as the persistent source of truth. Stores anonymized journal entries, user profiles, activity catalogs, plus the agentic layer's Morning Briefings and Logistics Scout plans. Includes an in-memory stub fallback for effortless local testing.",
         meta: [
-          { label: "Collections", val: "journal_entries, activities, users, invitations" },
+          { label: "Collections", val: "journal_entries, activities, users, morning_briefings, scout_plans" },
           { label: "Fallback", val: "_InMemoryCollection for local dev without keys" },
           { label: "Consistency", val: "Strong consistency for user queries & memory" }
         ]
