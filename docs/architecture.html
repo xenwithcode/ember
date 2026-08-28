@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es" class="dark">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ember 🔥 — Diagrama de Arquitectura y Flujo del Sistema</title>
+  <title>Ember 🔥 — System Architecture & Data Flow Diagram</title>
   <style>
     :root {
       --bg-primary: #0c0a09;
@@ -330,7 +330,7 @@
       position: absolute;
       top: 24px;
       right: 24px;
-      width: 340px;
+      width: 350px;
       background: var(--bg-card);
       backdrop-filter: blur(12px);
       border: 1px solid var(--border-focus);
@@ -338,7 +338,7 @@
       padding: 20px;
       z-index: 15;
       box-shadow: var(--shadow-elevation);
-      transform: translateX(380px);
+      transform: translateX(390px);
       transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       display: flex;
       flex-direction: column;
@@ -563,16 +563,16 @@
     <!-- Flow Filters -->
     <div class="filter-group">
       <button class="filter-btn active" data-flow="all">
-        <span>🌐</span> Todo el Sistema
+        <span>🌐</span> Entire System
       </button>
       <button class="filter-btn" data-flow="journal">
-        <span>✍️</span> Flujo Diario & Coach
+        <span>✍️</span> Journal & Coach Flow
       </button>
       <button class="filter-btn" data-flow="privacy">
-        <span>🛡️</span> Privacy Shield (Gemma)
+        <span>🛡️</span> Privacy Shield (Gemma 4)
       </button>
       <button class="filter-btn" data-flow="activities">
-        <span>🌍</span> Actividades & Calendario
+        <span>🌍</span> Activities & Calendar
       </button>
       <button class="filter-btn" data-flow="memory">
         <span>🧠</span> Memory Bank (Firestore)
@@ -581,18 +581,18 @@
 
     <!-- Action Buttons -->
     <div class="actions">
-      <button class="btn theme-toggle-btn" id="theme-btn" title="Alternar tema claro/oscuro (Tecla: T)">
+      <button class="btn theme-toggle-btn" id="theme-btn" title="Toggle Light/Dark Theme (Shortcut: T)">
         <span id="theme-icon">🌙</span>
-        <span>Tema</span>
+        <span>Theme</span>
         <span class="shortcut-badge">T</span>
       </button>
 
-      <button class="btn" id="export-svg-btn" title="Descargar archivo vectorial SVG">
+      <button class="btn" id="export-svg-btn" title="Download Vector SVG File">
         <span>📐</span> SVG
       </button>
 
-      <button class="btn btn-primary" id="export-png-btn" title="Exportar diagrama en imagen PNG de alta resolución">
-        <span>📷</span> Exportar PNG
+      <button class="btn btn-primary" id="export-png-btn" title="Export High-Resolution PNG Image">
+        <span>📷</span> Export PNG
       </button>
     </div>
   </header>
@@ -721,13 +721,13 @@
         <path id="flow-privacy-crisis" d="M 545 245 L 545 710" 
               class="flow-line flow-privacy" 
               stroke="var(--accent-crisis)" stroke-dasharray="4 4" marker-end="url(#arrow-crisis)" />
-        <text x="555" y="605" class="flow-label" fill="var(--accent-crisis)">🚨 Riesgo Detectado → 988 Bypass</text>
+        <text x="555" y="605" class="flow-label" fill="var(--accent-crisis)">🚨 Crisis Detected → 988 Bypass</text>
 
         <!-- 5. Privacy Shield -> Resilience Coach Agent -->
         <path id="flow-privacy-coach" d="M 680 205 L 750 205" 
               class="flow-line flow-journal" 
               stroke="var(--accent-ember)" marker-end="url(#arrow-ember)" />
-        <text x="690" y="222" class="flow-label" fill="var(--accent-ember)">Texto Seguro</text>
+        <text x="690" y="222" class="flow-label" fill="var(--accent-ember)">Anonymized Text</text>
 
         <!-- 6. Memory Bank -> Resilience Coach Agent -->
         <path id="flow-memory-coach" d="M 680 370 L 750 235" 
@@ -739,7 +739,7 @@
         <path id="flow-memory-firestore" d="M 545 425 L 545 470" 
               class="flow-line flow-journal flow-memory" 
               stroke="var(--accent-memory)" marker-end="url(#arrow-memory)" />
-        <text x="555" y="452" class="flow-label" fill="var(--accent-memory)">R/W Historial</text>
+        <text x="555" y="452" class="flow-label" fill="var(--accent-memory)">R/W History & Stats</text>
 
         <!-- 8. Resilience Coach <-> Vertex AI Gemini 3.5 -->
         <path id="flow-coach-gemini" d="M 1020 205 L 1140 205" 
@@ -751,7 +751,7 @@
         <path id="flow-coach-activity" d="M 885 245 L 885 315" 
               class="flow-line flow-activities" 
               stroke="var(--accent-real)" marker-end="url(#arrow-real)" />
-        <text x="895" y="285" class="flow-label" fill="var(--accent-real)">Match Intereses</text>
+        <text x="895" y="285" class="flow-label" fill="var(--accent-real)">Interest & Anxiety Match</text>
 
         <!-- 10. Activity Catalog -> Google Maps Platform -->
         <path id="flow-activity-maps" d="M 1020 370 L 1140 370" 
@@ -775,7 +775,7 @@
         <path id="flow-action-realworld" d="M 885 580 L 885 710" 
               class="flow-line flow-activities" 
               stroke="var(--accent-real)" marker-end="url(#arrow-real)" />
-        <text x="895" y="650" class="flow-label" fill="var(--accent-real)">Experiencia Presencial (2+ hrs)</text>
+        <text x="895" y="650" class="flow-label" fill="var(--accent-real)">In-Person Experience (2+ hrs)</text>
 
         <!-- 14. Real World Action -> Web Client (Reflection Loop) -->
         <path id="flow-reflection-loop" d="M 750 765 C 240 765 240 320 195 245" 
@@ -787,7 +787,7 @@
         <path id="flow-response-return" d="M 750 185 C 500 185 360 210 325 330" 
               class="flow-line flow-journal" 
               stroke="var(--accent-ember)" stroke-dasharray="4 4" marker-end="url(#arrow-ember)" />
-        <text x="375" y="165" class="flow-label" fill="var(--accent-ember)">Respuesta Empática + Feedback Visual</text>
+        <text x="375" y="165" class="flow-label" fill="var(--accent-ember)">Empathetic Response + Visual Feedback</text>
       </g>
 
 
@@ -803,8 +803,8 @@
         <text x="27" y="42" font-size="18">🖥️</text>
         <text x="65" y="32" class="node-title">Web Client & Living UI</text>
         <text x="65" y="48" class="node-subtitle">Next.js 16 + React 19 Client</text>
-        <text x="20" y="72" class="node-desc">Living Ember interactivo · 5 Rituales</text>
-        <text x="20" y="88" class="node-desc">Voz multimodal · Triumph Dashboard</text>
+        <text x="20" y="72" class="node-desc">Interactive Living Ember · 5 Rituals</text>
+        <text x="20" y="88" class="node-desc">Multimodal Voice · Triumph Board</text>
         <rect x="185" y="12" width="62" height="18" rx="4" fill="rgba(56, 189, 248, 0.15)" />
         <text x="192" y="24" class="node-tag" fill="var(--accent-gemini)">FRONTEND</text>
       </g>
@@ -817,8 +817,8 @@
         <text x="27" y="42" font-size="18">⚡</text>
         <text x="65" y="32" class="node-title">API Security Proxy</text>
         <text x="65" y="48" class="node-subtitle">Next.js Edge / Server Handler</text>
-        <text x="20" y="72" class="node-desc">Ruta /api/[...path] · Inyección X-API-Key</text>
-        <text x="20" y="88" class="node-desc">Aislamiento de credenciales cliente</text>
+        <text x="20" y="72" class="node-desc">/api/[...path] Route · Key Injection</text>
+        <text x="20" y="88" class="node-desc">Server-side credential isolation</text>
         <rect x="195" y="12" width="52" height="18" rx="4" fill="rgba(56, 189, 248, 0.15)" />
         <text x="202" y="24" class="node-tag" fill="var(--accent-gemini)">GATEWAY</text>
       </g>
@@ -831,8 +831,8 @@
         <text x="27" y="42" font-size="18">🛡️</text>
         <text x="65" y="32" class="node-title">Privacy Shield (Gemma 4)</text>
         <text x="65" y="48" class="node-subtitle">Vertex AI MaaS (Global Endpoint)</text>
-        <text x="20" y="72" class="node-desc">Anonimización PII [PERSON], [SCHOOL]</text>
-        <text x="20" y="88" class="node-desc">Detección de crisis 988 · Análisis ánimo</text>
+        <text x="20" y="72" class="node-desc">PII Anonymization [PERSON], [SCHOOL]</text>
+        <text x="20" y="88" class="node-desc">988 Crisis Detection · Mood Scoring</text>
         <rect x="180" y="12" width="78" height="18" rx="4" fill="rgba(16, 185, 129, 0.15)" />
         <text x="186" y="24" class="node-tag" fill="var(--accent-gemma)">SECURITY L1</text>
       </g>
@@ -845,8 +845,8 @@
         <text x="27" y="42" font-size="18">🤖</text>
         <text x="65" y="32" class="node-title">Resilience Coach Agent</text>
         <text x="65" y="48" class="node-subtitle">Google ADK + Gemini 3.5 Flash Lite</text>
-        <text x="20" y="72" class="node-desc">Empatía colaborativa · Razonamiento</text>
-        <text x="20" y="88" class="node-desc">InMemorySessionService multi-turno</text>
+        <text x="20" y="72" class="node-desc">Collaborative Empathy & Action Coach</text>
+        <text x="20" y="88" class="node-desc">Multi-turn InMemorySessionService</text>
         <rect x="195" y="12" width="63" height="18" rx="4" fill="var(--accent-ember-glow)" />
         <text x="202" y="24" class="node-tag" fill="var(--accent-ember)">ADK AGENT</text>
       </g>
@@ -859,8 +859,8 @@
         <text x="27" y="42" font-size="18">🧠</text>
         <text x="65" y="32" class="node-title">Memory Bank Service</text>
         <text x="65" y="48" class="node-subtitle">Persistent Cross-Session Memory</text>
-        <text x="20" y="72" class="node-desc">Rachas, palabras, tendencias emocionales</text>
-        <text x="20" y="88" class="node-desc">Inyección dinámica de contexto al coach</text>
+        <text x="20" y="72" class="node-desc">Streaks, word counts, emotional trends</text>
+        <text x="20" y="88" class="node-desc">Dynamic context injection for Coach</text>
         <rect x="180" y="12" width="78" height="18" rx="4" fill="rgba(168, 85, 247, 0.15)" />
         <text x="187" y="24" class="node-tag" fill="var(--accent-memory)">LONG MEMORY</text>
       </g>
@@ -872,9 +872,9 @@
         <circle cx="35" cy="35" r="16" fill="rgba(245, 158, 11, 0.15)" />
         <text x="27" y="42" font-size="18">📍</text>
         <text x="65" y="32" class="node-title">Activity Catalog & Geo</text>
-        <text x="65" y="48" class="node-subtitle">Descubrimiento Georreferenciado</text>
-        <text x="20" y="70" class="node-desc">8 categorías · Nivel de ansiedad</text>
-        <text x="20" y="86" class="node-desc">Filtro por distancia Haversine y Maps</text>
+        <text x="65" y="48" class="node-subtitle">Geolocation Discovery Engine</text>
+        <text x="20" y="70" class="node-desc">8 categories · Anxiety level matching</text>
+        <text x="20" y="86" class="node-desc">Haversine distance & Google Maps filter</text>
         <rect x="185" y="12" width="73" height="18" rx="4" fill="rgba(245, 158, 11, 0.15)" />
         <text x="192" y="24" class="node-tag" fill="var(--accent-real)">DISCOVERY</text>
       </g>
@@ -887,8 +887,8 @@
         <text x="27" y="42" font-size="18">📅</text>
         <text x="65" y="32" class="node-title">Calendar & Invitations</text>
         <text x="65" y="48" class="node-subtitle">Social Logistics & Scheduling</text>
-        <text x="20" y="70" class="node-desc">Agendamiento en Google Calendar</text>
-        <text x="20" y="86" class="node-desc">Generación de invitaciones Gmail/SMS</text>
+        <text x="20" y="70" class="node-desc">Google Calendar event scheduling</text>
+        <text x="20" y="86" class="node-desc">AI-drafted Gmail & SMS invitations</text>
         <rect x="195" y="12" width="63" height="18" rx="4" fill="rgba(66, 133, 244, 0.15)" />
         <text x="202" y="24" class="node-tag" fill="var(--accent-google)">LOGISTICS</text>
       </g>
@@ -901,7 +901,7 @@
         <text x="27" y="42" font-size="18">🔮</text>
         <text x="65" y="32" class="node-title">Vertex AI Garden</text>
         <text x="65" y="48" class="node-subtitle">Google AI Foundation Models</text>
-        <text x="20" y="72" class="node-desc">Gemma 4 (4B MaaS global)</text>
+        <text x="20" y="72" class="node-desc">Gemma 4 (4B MaaS global endpoint)</text>
         <text x="20" y="88" class="node-desc">Gemini 3.5 Flash Lite (ADK inference)</text>
         <rect x="190" y="12" width="68" height="18" rx="4" fill="rgba(66, 133, 244, 0.15)" />
         <text x="198" y="24" class="node-tag" fill="var(--accent-google)">AI MODELS</text>
@@ -914,9 +914,9 @@
         <circle cx="35" cy="35" r="16" fill="rgba(168, 85, 247, 0.15)" />
         <text x="27" y="42" font-size="18">🔥</text>
         <text x="65" y="32" class="node-title">Google Cloud Firestore</text>
-        <text x="65" y="48" class="node-subtitle">Fuente de Verdad Persistente</text>
-        <text x="20" y="70" class="node-desc">Colecciones: journal_entries, users</text>
-        <text x="20" y="86" class="node-desc">activities, invitations · Fallback in-memory</text>
+        <text x="65" y="48" class="node-subtitle">Persistent Source of Truth</text>
+        <text x="20" y="70" class="node-desc">Collections: journal_entries, users</text>
+        <text x="20" y="86" class="node-desc">activities, invitations · In-memory stub</text>
         <rect x="195" y="12" width="63" height="18" rx="4" fill="rgba(168, 85, 247, 0.15)" />
         <text x="203" y="24" class="node-tag" fill="var(--accent-memory)">DATABASE</text>
       </g>
@@ -928,8 +928,8 @@
         <circle cx="35" cy="35" r="16" fill="rgba(66, 133, 244, 0.15)" />
         <text x="27" y="42" font-size="18">🌐</text>
         <text x="65" y="32" class="node-title">Google Workspace & Maps</text>
-        <text x="65" y="48" class="node-subtitle">Integración de Servicios Externos</text>
-        <text x="20" y="72" class="node-desc">Google Maps Platform (Places / Maps)</text>
+        <text x="65" y="48" class="node-subtitle">External Cloud Platform APIs</text>
+        <text x="20" y="72" class="node-desc">Google Maps Platform (Places / Matrix)</text>
         <text x="20" y="88" class="node-desc">Google Calendar API · Gmail API</text>
         <rect x="205" y="12" width="53" height="18" rx="4" fill="rgba(66, 133, 244, 0.15)" />
         <text x="212" y="24" class="node-tag" fill="var(--accent-google)">APIS</text>
@@ -942,9 +942,9 @@
         <circle cx="35" cy="35" r="16" fill="rgba(245, 158, 11, 0.15)" />
         <text x="27" y="42" font-size="18">🌱</text>
         <text x="65" y="32" class="node-title">Real-World Action (2+ hrs)</text>
-        <text x="65" y="48" class="node-subtitle">Desconexión Digital & Autoestima</text>
-        <text x="20" y="72" class="node-desc">Talleres, naturaleza, voluntariado</text>
-        <text x="20" y="88" class="node-desc">Eventos verificados con Inner Circle</text>
+        <text x="65" y="48" class="node-subtitle">Digital Detox & Self-Worth</text>
+        <text x="20" y="72" class="node-desc">Workshops, nature walks, volunteering</text>
+        <text x="20" y="88" class="node-desc">Community-verified with Inner Circle</text>
         <rect x="180" y="12" width="78" height="18" rx="4" fill="rgba(245, 158, 11, 0.15)" />
         <text x="187" y="24" class="node-tag" fill="var(--accent-real)">OFFLINE LIFE</text>
       </g>
@@ -956,9 +956,9 @@
         <circle cx="35" cy="35" r="16" fill="rgba(239, 68, 68, 0.15)" />
         <text x="27" y="42" font-size="18">🚨</text>
         <text x="65" y="32" class="node-title">988 Suicide & Crisis Net</text>
-        <text x="65" y="48" class="node-subtitle">Protocolo de Seguridad Inmediata</text>
-        <text x="20" y="72" class="node-desc">Línea 988 · Crisis Text Line (HOME 741741)</text>
-        <text x="20" y="88" class="node-desc">Escalación inmediata ante autolesión</text>
+        <text x="65" y="48" class="node-subtitle">Immediate Safety Escalation</text>
+        <text x="20" y="72" class="node-desc">988 Lifeline · Crisis Text Line (741741)</text>
+        <text x="20" y="88" class="node-desc">Instant bypass on self-harm detection</text>
         <rect x="190" y="12" width="68" height="18" rx="4" fill="rgba(239, 68, 68, 0.15)" />
         <text x="198" y="24" class="node-tag" fill="var(--accent-crisis)">SAFETY NET</text>
       </g>
@@ -967,16 +967,16 @@
 
   <!-- Zoom & Pan Controls Overlay -->
   <div class="controls-overlay">
-    <button class="control-btn" id="zoom-in" title="Acercar (+)">+</button>
-    <button class="control-btn" id="zoom-out" title="Alejar (-)">−</button>
-    <button class="control-btn" id="zoom-reset" title="Restablecer vista (R)">⟲</button>
+    <button class="control-btn" id="zoom-in" title="Zoom In (+)">+</button>
+    <button class="control-btn" id="zoom-out" title="Zoom Out (−)">−</button>
+    <button class="control-btn" id="zoom-reset" title="Reset View (R)">⟲</button>
   </div>
 
   <!-- Diagram Legend Overlay -->
   <div class="legend-overlay">
     <div class="legend-title">
-      <span>Capas de Arquitectura</span>
-      <span style="font-size: 10px; color: var(--accent-ember);">12 Nodos</span>
+      <span>Architecture Layers</span>
+      <span style="font-size: 10px; color: var(--accent-ember);">12 Nodes</span>
     </div>
     <div class="legend-grid">
       <div class="legend-item">
@@ -997,11 +997,11 @@
       </div>
       <div class="legend-item">
         <div class="legend-dot" style="background: var(--accent-real);"></div>
-        <span>Actividades Reales</span>
+        <span>Real-World Actions</span>
       </div>
       <div class="legend-item">
         <div class="legend-dot" style="background: var(--accent-crisis);"></div>
-        <span>Red de Crisis 988</span>
+        <span>988 Crisis Net</span>
       </div>
     </div>
   </div>
@@ -1012,15 +1012,15 @@
       <div class="inspector-title-group">
         <span class="inspector-icon" id="ins-icon">🔥</span>
         <div>
-          <div class="inspector-category" id="ins-cat">Categoría</div>
-          <div class="inspector-title" id="ins-title">Nombre del Componente</div>
+          <div class="inspector-category" id="ins-cat">Category</div>
+          <div class="inspector-title" id="ins-title">Component Name</div>
         </div>
       </div>
-      <button class="close-inspector" id="close-inspector-btn" title="Cerrar panel (Esc)">✕</button>
+      <button class="close-inspector" id="close-inspector-btn" title="Close Panel (Esc)">✕</button>
     </div>
     <div class="inspector-body">
-      <p id="ins-desc">Selecciona un componente para ver sus responsabilidades técnicas y flujo de datos.</p>
-      <div class="inspector-badge" id="ins-tech">Tecnología</div>
+      <p id="ins-desc">Select any architecture node to inspect its technical specifications, data flow roles, and API endpoints.</p>
+      <div class="inspector-badge" id="ins-tech">Technology</div>
       <div class="inspector-meta" id="ins-meta">
         <!-- Metadata dynamically injected -->
       </div>
@@ -1031,18 +1031,18 @@
   <canvas id="export-canvas"></canvas>
 
   <script>
-    // Detailed component information dictionary for the inspector
+    // Detailed component information dictionary for the inspector (in English)
     const COMPONENT_DETAILS = {
       "web-ui": {
         icon: "🖥️",
         category: "Frontend Layer",
         title: "Web Client & Living UI",
         tech: "Next.js 16 (App Router) + React 19 + Tailwind CSS v4",
-        desc: "Interfaz de usuario cálida y responsiva. Implementa el Living Ember (visualizador de emociones con canvas reactivo), 5 Rituales de escritura (Morning, Evening, Deep, Metaphor, Letter to Future You), dictado por voz multimodal con Web Speech API, y el Triumph Board con Identity Graph.",
+        desc: "Warm and responsive user interface designed to rebuild self-esteem. Features the reactive Living Ember visualizer that breathes and shifts colors based on emotional expression, 5 reflective writing rituals (Morning, Evening, Deep, Metaphor, Letter to Future You), multimodal voice dictation with Web Speech API, and the Triumph Board with identity graph progress tracking.",
         meta: [
-          { label: "Páginas Principales", val: "/journal, /activities, /calendar, /friends, /dashboard" },
-          { label: "Modos de Entrada", val: "Texto enriquecido serif & Voz Web Speech API" },
-          { label: "Estado Local", val: "localStorage (solo como caché offline de emergencia)" }
+          { label: "Core Pages", val: "/journal, /activities, /calendar, /friends, /dashboard" },
+          { label: "Input Modalities", val: "Serif rich text & local Web Speech API" },
+          { label: "Client Cache", val: "localStorage (emergency offline cache only)" }
         ]
       },
       "api-proxy": {
@@ -1050,35 +1050,35 @@
         category: "Security Gateway",
         title: "API Security Proxy",
         tech: "Next.js Route Handler (/api/[...path])",
-        desc: "Capa proxy del lado del servidor que intercepta todas las peticiones del cliente web hacia el backend en Cloud Run. Inyecta la cabecera segura 'X-API-Key' para autenticación sin exponer secretos en el navegador del usuario.",
+        desc: "Server-side proxy layer that securely routes client requests to the Cloud Run backend. Injects the secret 'X-API-Key' header on the server side, keeping sensitive credentials completely hidden from client-side browser inspection.",
         meta: [
-          { label: "Rutas Atendidas", val: "/api/chat/*, /api/journal/*, /api/activities/*" },
-          { label: "Seguridad", val: "CORS restringido + Validación de API Key" },
-          { label: "Protocolo", val: "HTTP/2 REST con payloads JSON seguros" }
+          { label: "Routed Endpoints", val: "/api/chat/*, /api/journal/*, /api/activities/*" },
+          { label: "Security", val: "Strict CORS + Server-side API key validation" },
+          { label: "Protocol", val: "HTTP/2 REST with structured JSON payloads" }
         ]
       },
       "privacy-shield": {
         icon: "🛡️",
-        category: "Dual-Layer Safety (L1)",
+        category: "Dual-Layer Safety (Layer 1)",
         title: "Privacy Shield (Gemma 4)",
         tech: "Gemma 4 via Vertex AI Model Garden (Global Endpoint)",
-        desc: "Primera línea de defensa de privacidad y seguridad antes de que el texto llegue al agente principal. Reemplaza nombres, escuelas y lugares con etiquetas genéricas ([PERSON], [SCHOOL], [LOCATION]), evalúa indicadores de crisis para activar el protocolo 988, y clasifica el estado de ánimo.",
+        desc: "Crucial privacy and safety firewall that processes all user text before it reaches the main coaching agent. Automatically detects and anonymizes PII (replacing names, schools, and cities with [PERSON], [SCHOOL], [LOCATION]), performs instant crisis checks to trigger the 988 lifeline, and analyzes mood polarity.",
         meta: [
-          { label: "Modelo", val: "Gemma 4 (4B active / 26B A4B MaaS)" },
-          { label: "Latencia Promedio", val: "~480ms (Procesamiento fail-safe)" },
-          { label: "Regla Crítica", val: "El texto sin anonimizar nunca llega al coach" }
+          { label: "Model", val: "Gemma 4 (4B active / 26B A4B MaaS)" },
+          { label: "Average Latency", val: "~480ms (Fail-safe architecture)" },
+          { label: "Zero-Exposure Rule", val: "Raw unredacted text never touches the coach" }
         ]
       },
       "resilience-coach": {
         icon: "🤖",
-        category: "ADK Core Intelligence (L2)",
+        category: "ADK Core Intelligence (Layer 2)",
         title: "Resilience Coach Agent",
         tech: "Google ADK (Agent Development Kit) + Gemini 3.5 Flash Lite",
-        desc: "Agente colaborativo que actúa como un compañero empático (no terapeuta) para adultos jóvenes (18-23). Procesa el texto anonimizado junto al historial inyectado del Memory Bank, responde con calidez y propone una acción real y de bajo riesgo en el mundo físico.",
+        desc: "Collaborative partner agent (not a therapist) tailored for young adults (18-23). Takes anonymized text combined with the user's historical Memory Bank block, generates compassionate reflections, and recommends one low-pressure, real-world action to rebuild confidence.",
         meta: [
-          { label: "Modelo Base", val: "Gemini 3.5 Flash Lite en Vertex AI" },
+          { label: "Foundation Model", val: "Gemini 3.5 Flash Lite on Vertex AI" },
           { label: "Framework", val: "google-adk Agent, Runner, Content parts" },
-          { label: "Sesión", val: "InMemorySessionService multi-turno" }
+          { label: "Session State", val: "Multi-turn InMemorySessionService" }
         ]
       },
       "memory-bank": {
@@ -1086,11 +1086,11 @@
         category: "Persistent State & Memory",
         title: "Memory Bank Service",
         tech: "Python 3.11 + Firestore Aggregation Engine",
-        desc: "Generador de memoria a largo plazo entre sesiones. Calcula rachas consecutivas, volumen de palabras, evolución emocional semana a semana y extractos de reflexiones anteriores para inyectarlos en el prompt del coach.",
+        desc: "Long-term cross-session memory builder. Calculates writing streaks, total word volume, week-over-week emotional trajectories, and recurring reflection excerpts to inject directly into the coach's context prompt.",
         meta: [
           { label: "Endpoints", val: "GET /api/journal/memory, GET /api/journal/stats" },
-          { label: "Beneficio", val: "El coach reconoce el progreso histórico real" },
-          { label: "Persistencia", val: "Asíncrona y transaccional en Cloud Firestore" }
+          { label: "Core Value", val: "Coach recognizes real historical progress" },
+          { label: "Persistence", val: "Asynchronous, ACID-compliant in Firestore" }
         ]
       },
       "activity-catalog": {
@@ -1098,11 +1098,11 @@
         category: "Discovery Engine",
         title: "Activity Catalog & Geo Service",
         tech: "FastAPI + Haversine Geolocation Engine",
-        desc: "Catálogo estructurado de actividades presenciales en 8 categorías (Creativo, Físico, Social, Intelectual, Voluntariado, Naturaleza, Mindfulness, Estudiantes). Filtra por nivel de ansiedad social y calcula distancias exactas respecto a la ubicación del usuario.",
+        desc: "Curated catalog of face-to-face offline activities across 8 categories (Creative, Physical, Social, Intellectual, Volunteer, Nature, Mindfulness, Student). Matches activities to the user's social anxiety comfort zone and computes distances via Haversine and Google Maps.",
         meta: [
-          { label: "Categorías", val: "8 categorías verificadas (talleres 2+ hrs)" },
-          { label: "Algoritmo", val: "Distancia geodésica Haversine + Google Maps" },
-          { label: "Semillero", val: "Carga idempotente de catálogo en el arranque" }
+          { label: "Catalog Scale", val: "8 verified categories (2+ hr deep workshops)" },
+          { label: "Algorithm", val: "Haversine geodesic distance + Google Maps" },
+          { label: "Seeding", val: "Idempotent boot seed keyed by stable slugs" }
         ]
       },
       "calendar-service": {
@@ -1110,11 +1110,11 @@
         category: "Logistics & Social Bridge",
         title: "Calendar & Invitation Logistics",
         tech: "Google Calendar API + Gmail API Templates",
-        desc: "Reduce la fricción para salir de la pantalla gestionando la logística: crea eventos en Google Calendar con recordatorios previos y redacta automáticamente correos o SMS personalizados para invitar a amigos del Inner Circle.",
+        desc: "Eliminates friction in transitioning from digital reflection to real-world action. Automatically schedules events on Google Calendar with pre-event reminders and drafts tone-adapted invitations for trusted friends in the Inner Circle.",
         meta: [
-          { label: "Integraciones", val: "Google Calendar API & Gmail API" },
-          { label: "Inner Circle", val: "Tono adaptativo según relación (amigo, familiar)" },
-          { label: "Confirmaciones", val: "Seguimiento de estado RSVP" }
+          { label: "Integrations", val: "Google Calendar API & Gmail API" },
+          { label: "Inner Circle", val: "Tone adapted by bond (close friend, family)" },
+          { label: "Tracking", val: "RSVP confirmation state management" }
         ]
       },
       "vertex-ai": {
@@ -1122,11 +1122,11 @@
         category: "Cloud AI Infrastructure",
         title: "Vertex AI Model Garden",
         tech: "Google Cloud Vertex AI (Global Endpoint)",
-        desc: "Infraestructura gestionada de Google Cloud que hospeda los modelos fundacionales del sistema: Gemma 4 en Model Garden (MaaS global) para la capa de privacidad, y Gemini 3.5 Flash Lite para la inferencia rápida del agente ADK.",
+        desc: "Managed Google Cloud AI infrastructure hosting both foundation models: Gemma 4 via Model Garden (MaaS global endpoint) for high-speed privacy filtering, and Gemini 3.5 Flash Lite for nuanced agentic reasoning.",
         meta: [
-          { label: "Modelos Activos", val: "gemma-4-26b-a4b-it & gemini-3.5-flash-lite" },
-          { label: "Endpoint", val: "location='global' con Google GenAI SDK" },
-          { label: "SLA / Seguridad", val: "Aislamiento enterprise de datos" }
+          { label: "Active Models", val: "gemma-4-26b-a4b-it & gemini-3.5-flash-lite" },
+          { label: "Endpoint", val: "location='global' with Google GenAI SDK" },
+          { label: "Enterprise SLA", val: "High availability, zero training data retention" }
         ]
       },
       "firestore": {
@@ -1134,11 +1134,11 @@
         category: "Cloud Database",
         title: "Google Cloud Firestore",
         tech: "Firestore NoSQL Database (Google Cloud)",
-        desc: "Base de datos persistente no relacional que almacena el historial completo de entradas de diario (anonimizadas), actividades del catálogo, perfiles de usuario y registro de invitaciones. Incluye un cliente con fallback en memoria para desarrollo local.",
+        desc: "Scalable NoSQL cloud database that serves as the persistent source of truth. Stores anonymized journal entries, user profiles, activity catalogs, and invitation logs. Includes an in-memory stub fallback for effortless local testing.",
         meta: [
-          { label: "Colecciones", val: "journal_entries, activities, users, invitations" },
-          { label: "Fallback", val: "_InMemoryCollection para local dev sin credenciales" },
-          { label: "Consistencia", val: "Fuerte para consultas de usuario y Memory Bank" }
+          { label: "Collections", val: "journal_entries, activities, users, invitations" },
+          { label: "Fallback", val: "_InMemoryCollection for local dev without keys" },
+          { label: "Consistency", val: "Strong consistency for user queries & memory" }
         ]
       },
       "google-apis": {
@@ -1146,23 +1146,23 @@
         category: "External Cloud Platform",
         title: "Google Workspace & Maps Platform",
         tech: "Google Maps Platform, Calendar API & Gmail API",
-        desc: "Conjunto de APIs de Google que conectan la inteligencia del agente con el mundo real: mapas interactivos para localizar eventos comunitarios, sincronización de agenda y envío de comunicaciones a la red de apoyo.",
+        desc: "Suite of Google platform services that bridge digital intelligence with offline reality: interactive map discovery for local community events, Google Calendar synchronization, and automated friend invitations.",
         meta: [
           { label: "Maps API", val: "Geocoding, Maps JavaScript API Loader, Places" },
-          { label: "Calendar", val: "Creación de eventos, alarmas y zonas horarias" },
-          { label: "Gmail", val: "Plantillas de invitación social sin esfuerzo" }
+          { label: "Calendar", val: "Event creation, notification alarms & timezones" },
+          { label: "Gmail", val: "Effortless social invitation drafting" }
         ]
       },
       "real-world": {
         icon: "🌱",
         category: "Human Impact & Growth",
         title: "Real-World Actions & Community",
-        tech: "Experiencias Presenciales (2+ horas de duración)",
-        desc: "El objetivo final de Ember: sacar al joven de la parálisis del scroll y llevarlo a experiencias reales (estudios de arte, senderismo, clubes de lectura, voluntariado). Tras asistir, el usuario registra su reflexión post-acción, actualizando su Identity Graph.",
+        tech: "Offline Experiences (2+ Hours Duration)",
+        desc: "The ultimate destination of Ember: breaking digital scroll paralysis and fostering real confidence through meaningful offline experiences (pottery classes, nature hikes, book clubs, volunteering). Post-action reflections feed back into the user's Identity Graph.",
         meta: [
-          { label: "Duración Óptima", val: "2+ horas (mayor impacto en autoconfianza)" },
-          { label: "Ember Program", val: "Alianzas con centros comunitarios y clubes" },
-          { label: "Feedback Loop", val: "La reflexión retroalimenta el Memory Bank" }
+          { label: "Optimal Duration", val: "2+ hours (proven maximum confidence boost)" },
+          { label: "Ember Program", val: "Partnerships with local community studios & clubs" },
+          { label: "Feedback Loop", val: "Post-reflection continually informs Memory Bank" }
         ]
       },
       "crisis-net": {
@@ -1170,11 +1170,11 @@
         category: "Safety & Emergency Escalation",
         title: "988 Suicide & Crisis Lifeline",
         tech: "988 Lifeline + Crisis Text Line (741741) Integration",
-        desc: "Mecanismo de seguridad crítico que intercepta inmediatamente cualquier texto que manifieste intención de autolesión o ideación suicida. El sistema interrumpe el flujo normal del agente y proporciona recursos de asistencia humana inmediata y confidencial 24/7.",
+        desc: "Fail-safe emergency safety mechanism that intercepts text expressing acute distress or self-harm intent. Immediately bypasses standard agent conversational flows and delivers direct, 24/7 human crisis support resources.",
         meta: [
-          { label: "Línea Directa", val: "Call / Text 988 (EE. UU.)" },
-          { label: "Línea de Texto", val: "Envía HOME al 741741" },
-          { label: "Ayuda Internacional", val: "findahelpline.com" }
+          { label: "Direct Phone / SMS", val: "Call / Text 988 (US & Canada)" },
+          { label: "Crisis Text Line", val: "Text HOME to 741741" },
+          { label: "International", val: "findahelpline.com" }
         ]
       }
     };
