@@ -6,8 +6,10 @@ A collaborative AI agent that helps young adults (18-23) rebuild self-worth
 through real-world actions, not digital validation.
 
 [![Built for All Things Agentic Hackathon](https://img.shields.io/badge/Hackathon-All%20Things%20Agentic-E28766?style=for-the-badge)](https://allthingsagentichackathon.devpost.com/)
+[![Interactive Architecture](https://img.shields.io/badge/🗺️_Architecture-Live_Interactive_Diagram-F59E0B?style=for-the-badge)](https://xenwithcode.github.io/ember/architecture.html)
 [![Google ADK](https://img.shields.io/badge/Google-ADK-4285F4?style=for-the-badge&logo=google)](https://google.github.io/adk-docs/)
 [![Gemini 3.5 Flash Lite](https://img.shields.io/badge/Gemini-3.5%20Flash%20Lite-34A853?style=for-the-badge)](https://ai.google.dev/)
+[![Gemma 4](https://img.shields.io/badge/Gemma-4%20Privacy%20Layer-10B981?style=for-the-badge)](https://cloud.google.com/vertex-ai)
 [![Cloud Run](https://img.shields.io/badge/Google%20Cloud-Cloud%20Run-EA4335?style=for-the-badge&logo=googlecloud)](https://cloud.google.com/run)
 
 ---
@@ -282,7 +284,19 @@ Protects the bridge by helping users break free from scroll paralysis.
 
 ## 🏗️ Architecture
 
-Built with **Google ADK**, **Gemini 3.5 Flash Lite**, and **Google Cloud Firestore**.
+Built with **Google ADK**, **Gemini 3.5 Flash Lite**, **Gemma 4**, and **Google Cloud Firestore**.
+
+> ### 🗺️ 🚀 [Live Interactive Architecture Diagram](https://xenwithcode.github.io/ember/architecture.html)
+> 
+> **For Hackathon Judges & Reviewers:** Explore our interactive system architecture in real time with animated data flows, component inspector, and light/dark theme toggle:
+> - 🌐 **[Open Live Diagram on GitHub Pages](https://xenwithcode.github.io/ember/architecture.html)** *(Official Live Host)*
+> - 🌐 **[Alternative Mirror (RawGithack CDN)](https://raw.githack.com/xenwithcode/ember/main/architecture.html)**
+> 
+> **Interactive Features:**
+> - 🔄 **Filter Data Flows:** Click on **Flujo Diario & Coach**, **Privacy Shield (Gemma)**, **Actividades & Calendario**, or **Memory Bank** to highlight live end-to-end paths.
+> - 🔍 **Component Inspector:** Click any of the 12 architecture nodes to view its technical specifications, endpoints, and safety guarantees.
+> - 🌗 **Theme Switch:** Press <kbd>T</kbd> to toggle between Dark and Light mode.
+> - 📷 **High-DPI PNG Export:** Click **Exportar PNG** to download a clean, high-resolution vector capture.
 
 ![Architecture Diagram](docs/architecture.png)
 

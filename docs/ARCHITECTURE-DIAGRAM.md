@@ -89,6 +89,7 @@ Frontend caches in localStorage (offline only — Firestore is the source of tru
 
 | Diagram | Source | Description |
 |---------|--------|-------------|
+| **Interactive Live Diagram** | [`architecture.html`](file:///home/xavier/AI-PROJECTS/ember/architecture.html) / `docs/architecture.html` | **Interactive web visualizer** with live flows (Journal, Privacy, Geo, Memory), dark/light mode toggle (<kbd>T</kbd>), node inspector, and high-DPI PNG export. [Open Live on GitHub Pages](https://xenwithcode.github.io/ember/architecture.html) |
 | System overview (with Memory Bank) | `docs/architecture.mermaid` | Frontend → Cloud Run → Privacy Shield → Memory Bank → Coach → Firestore |
 | Hybrid (Gemma + Gemini) | `docs/architecture-hybrid.mermaid` | Dual-layer architecture with Privacy Shield |
 
